@@ -4,4 +4,359 @@ description: "Bộ art đặc trưng từng lứa tuổi"
 icon: "icons"
 ---
 
-# Iconography & Illustrations
+## Tổng quan
+
+Icon và Illustration là **ngôn ngữ thị giác đặc trưng** nhất của OVI — nơi sự khác biệt giữa Kids, Teens và Teacher/Admin lộ rõ nhất chỉ trong nháy mắt.
+
+- **Kids**: icon **filled, rounded** \+ illustration nhân vật phong phú, mascot dẫn dắt.
+- **Teens**: icon **outlined, sharp** \+ illustration tối giản, geometric, gradient nhẹ.
+- **Teacher/Admin**: icon **outlined, neutral** \+ illustration tối giản, monochrome, ưu tiên data viz.
+
+Tất cả được quản lý theo mô hình **Multi-theme 3 tầng** trên Figma Variables — một icon `<Icon name="home" />` sẽ tự động đổi style khi switch theme.
+
+## 1. Naming Convention — Mô hình 3 tầng
+
+### Tầng 1 — Primitive (Reference)
+
+Asset thô — file SVG/Lottie chưa mang ý nghĩa sử dụng.
+
+```text
+ref.icon.size.16
+ref.icon.size.20
+ref.icon.size.24
+ref.icon.size.32
+ref.icon.size.48
+ref.icon.stroke.thin     →  1.5px
+ref.icon.stroke.regular  →  2px
+ref.icon.stroke.bold     →  2.5px
+
+ref.illustration.set.kids
+ref.illustration.set.teens
+ref.illustration.set.teacher
+```
+
+### Tầng 2 — Semantic (System)
+
+```text
+sys.icon.size.sm      →  16px (caption, inline)
+sys.icon.size.md      →  20px (default)
+sys.icon.size.lg      →  24px (button, list-item)
+sys.icon.size.xl      →  32px (CTA, header)
+sys.icon.size.hero    →  48px (empty state, onboarding)
+
+sys.icon.style        →  filled | outlined | duotone
+sys.icon.stroke.default
+sys.icon.color.default
+sys.icon.color.brand
+sys.icon.color.muted
+
+sys.illustration.style       →  character | geometric | monochrome
+sys.illustration.size.spot   →  120px (small inline)
+sys.illustration.size.scene  →  240px (empty state)
+sys.illustration.size.hero   →  400px (onboarding, marketing)
+```
+
+### Tầng 3 — Component
+
+```text
+cmp.button.icon-size
+cmp.button.icon-stroke
+cmp.tab.icon-size
+cmp.empty-state.illustration-size
+cmp.onboarding.illustration-set
+```
+
+<Note>
+  **Icon naming convention** trong source: `kebab-case` \+ dạng _(filled / outlined)_. Ví dụ: `home-filled.svg`, `home-outlined.svg`. Component `<Icon name="home" />` sẽ tự chọn variant theo theme.
+</Note>
+
+## 2. Mapping Table — Theme Switching
+
+### Icon Tokens
+
+| Semantic Token | OVI Kids | OVI Teens | OVI Teacher/Admin |
+| --- | --- | --- | --- |
+| `sys.icon.style` | **filled, rounded** | **outlined, sharp** | **outlined, neutral** |
+| `sys.icon.stroke.default` | 2.5px (bold) | 2px (regular) | 1.5px (thin) |
+| `sys.icon.size.sm` | 20px | 16px | 16px |
+| `sys.icon.size.md` | 24px | 20px | 20px |
+| `sys.icon.size.lg` | 32px | 24px | 20px |
+| `sys.icon.size.xl` | 40px | 32px | 24px |
+| `sys.icon.color.default` | `#5C3A28`_(nâu ấm)_ | `#CBD5E1`_(slate sáng)_ | `#475569`_(slate trung)_ |
+| `sys.icon.color.brand` | `#FF8A3D`_(cam)_ | `#22D3EE`_(neon cyan)_ | `#1E3A8A`_(navy)_ |
+| `sys.icon.library` | `OVI Kids Pack` | `Lucide` | `Phosphor Regular` |
+
+### Illustration Tokens
+
+| Semantic Token | OVI Kids | OVI Teens | OVI Teacher/Admin |
+| --- | --- | --- | --- |
+| `sys.illustration.style` | **Character**_(mascot Bin, Mimi)_ | **Geometric**_(shapes \+ gradient)_ | **Monochrome line art** |
+| `sys.illustration.color-mode` | Multicolor \+ outline | Duotone \+ neon accent | Single-color (brand navy) |
+| `sys.illustration.set` | `Kids/Friends`_(50\+ scenes)_ | `Teens/Abstract`_(20\+ scenes)_ | `Teacher/UI-spots`_(15\+ scenes)_ |
+| `sys.illustration.size.spot` | 120px | 96px | 80px |
+| `sys.illustration.size.scene` | 280px | 240px | 200px |
+| `sys.illustration.size.hero` | 480px | 400px | 320px |
+| `sys.illustration.animation` | Lottie loop _(3–5s)_ | Lottie 1-shot _(hover trigger)_ | Static SVG |
+
+<Tip>
+  **Quan sát**: Stroke icon Kids gấp đôi Teacher (2.5px vs 1.5px). Đây là chủ ý — trẻ cần icon "chắc nét", giáo viên cần icon "thanh thoát" để không nhiễu khi scan dữ liệu.
+</Tip>
+
+## 3. Cách sử dụng trong Code & Figma
+
+### Code — JSON Token & Usage
+
+<CodeGroup>
+
+```json tokens.icon.json
+{
+  "ref": {
+    "icon": {
+      "size": {
+        "16": { "value": "16px", "type": "size" },
+        "20": { "value": "20px", "type": "size" },
+        "24": { "value": "24px", "type": "size" },
+        "32": { "value": "32px", "type": "size" }
+      },
+      "stroke": {
+        "thin":    { "value": "1.5px", "type": "borderWidth" },
+        "regular": { "value": "2px",   "type": "borderWidth" },
+        "bold":    { "value": "2.5px", "type": "borderWidth" }
+      }
+    }
+  },
+  "sys": {
+    "icon": {
+      "size": {
+        "md": { "value": "{ref.icon.size.20}", "type": "size" },
+        "lg": { "value": "{ref.icon.size.24}", "type": "size" }
+      },
+      "stroke": {
+        "default": { "value": "{ref.icon.stroke.regular}", "type": "borderWidth" }
+      },
+      "style": { "value": "outlined", "type": "string" },
+      "library": { "value": "lucide", "type": "string" }
+    }
+  }
+}
+```
+
+```css icon.css
+[data-theme="kids"] {
+  --sys-icon-size-md: 24px;
+  --sys-icon-size-lg: 32px;
+  --sys-icon-stroke-default: 2.5px;
+  --sys-icon-color-default: #5C3A28;
+  --sys-icon-color-brand: #FF8A3D;
+}
+
+[data-theme="teens"] {
+  --sys-icon-size-md: 20px;
+  --sys-icon-size-lg: 24px;
+  --sys-icon-stroke-default: 2px;
+  --sys-icon-color-default: #CBD5E1;
+  --sys-icon-color-brand: #22D3EE;
+}
+
+[data-theme="teacher"] {
+  --sys-icon-size-md: 20px;
+  --sys-icon-size-lg: 20px;
+  --sys-icon-stroke-default: 1.5px;
+  --sys-icon-color-default: #475569;
+  --sys-icon-color-brand: #1E3A8A;
+}
+```
+
+```tsx Icon.tsx
+import { useTheme } from '@ovi/design-tokens';
+
+type IconName = 'home' | 'search' | 'user' | 'settings' | /* ... */;
+type IconSize = 'sm' | 'md' | 'lg' | 'xl';
+
+interface IconProps {
+  name: IconName;
+  size?: IconSize;
+  color?: 'default' | 'brand' | 'muted';
+}
+
+export function Icon({ name, size = 'md', color = 'default' }: IconProps) {
+  const theme = useTheme(); // 'kids' | 'teens' | 'teacher'
+
+  // Auto-resolve variant: kids → filled, teens/teacher → outlined
+  const variant = theme === 'kids' ? 'filled' : 'outlined';
+
+  return (
+    <svg
+      width={`var(--sys-icon-size-${size})`}
+      height={`var(--sys-icon-size-${size})`}
+      stroke={`var(--sys-icon-color-${color})`}
+      strokeWidth="var(--sys-icon-stroke-default)"
+      aria-hidden="true"
+      focusable="false"
+    >
+      <use href={`/icons/${theme}/${name}-${variant}.svg#icon`} />
+    </svg>
+  );
+}
+
+// Sử dụng:
+<Icon name="home" size="lg" color="brand" />
+```
+
+```tsx Illustration.tsx
+import { useTheme } from '@ovi/design-tokens';
+
+type SceneName = 'empty-classroom' | 'first-lesson' | 'celebration';
+
+export function Illustration({
+  scene,
+  size = 'scene',
+}: {
+  scene: SceneName;
+  size?: 'spot' | 'scene' | 'hero';
+}) {
+  const theme = useTheme();
+
+  return (
+    <img
+      src={`/illustrations/${theme}/${scene}.svg`}
+      alt={getSceneAltText(scene)}
+      style={{ width: `var(--sys-illustration-size-${size})` }}
+    />
+  );
+}
+```
+
+</CodeGroup>
+
+### Figma — Component Variants & Variables
+
+<Steps>
+  <Step title="Tạo Icon Component">
+    Mỗi icon là 1 Component có 2 variants: `Filled` và `Outlined`. Trong panel Variants, tạo property `style`.
+  </Step>
+  <Step title="Tạo Variable boolean theo theme">
+    Trong collection `OVI/Icons`, tạo variable `sys/icon/style` với type **String** — giá trị: Kids = `filled`, Teens/Teacher = `outlined`.
+  </Step>
+  <Step title="Bind Component Property">
+    Trong panel Properties của Icon, bind `style` tới variable `sys/icon/style`. Khi switch theme, icon tự đổi variant.
+  </Step>
+  <Step title="Bind size & stroke">
+    Bind `width`, `height` tới `sys/icon/size/md`. Bind `stroke-width` tới `sys/icon/stroke/default`.
+  </Step>
+  <Step title="Illustration Library">
+    Tạo 3 page riêng `Kids Library`, `Teens Library`, `Teacher Library` trong Figma file `OVI/Illustrations`. Designer chọn library tương ứng với app đang thiết kế.
+  </Step>
+</Steps>
+
+## 4. Tiêu chuẩn Accessibility (WCAG)
+
+### Yêu cầu cốt lõi
+
+| Tiêu chí | WCAG | OVI áp dụng |
+| --- | --- | --- |
+| **Non-text contrast** 1.4.11 | Icon có nghĩa ≥ 3:1 với background | ✅ |
+| **Text alternative** 1.1.1 | `alt` hoặc `aria-label` cho icon có nghĩa | ✅ |
+| **Decorative icons** | `aria-hidden="true"` | ✅ |
+| **Touch target** 2.5.5 | Icon button ≥ 44×44px (Kids: 56×56) | ✅ |
+| **Animation** 2.3.3 | Tôn trọng `prefers-reduced-motion` | ✅ |
+
+### Phân loại Icon theo mục đích
+
+| Loại | Aria | Ví dụ |
+| --- | --- | --- |
+| **Decorative**_(chỉ trang trí)_ | `aria-hidden="true"` | Icon ngôi sao trong card đẹp mắt |
+| **Functional**_(thay text)_ | `aria-label="Tên hành động"` | IconButton chỉ có icon ✕ |
+| **Semantic**_(kèm text)_ | `aria-hidden="true"`_(text đã đủ nghĩa)_ | Icon ✓ kèm text "Đã hoàn thành" |
+| **Status**_(báo trạng thái)_ | `role="img"` \+ `aria-label` | Icon error trong alert |
+
+```tsx
+// Decorative
+<Icon name="sparkle" aria-hidden="true" />
+
+// Functional
+<button aria-label="Đóng">
+  <Icon name="close" aria-hidden="true" />
+</button>
+
+// Status
+<div role="img" aria-label="Lỗi">
+  <Icon name="alert-circle" />
+</div>
+```
+
+### Quy định riêng cho OVI Kids
+
+- **Icon size tối thiểu 24px** trong UI chính — trẻ khó parse icon nhỏ.
+- **Touch target chứa icon ≥ 56×56dp** — ngay cả khi icon chỉ 24px, padding xung quanh phải đủ lớn.
+- **Mascot Bin & Mimi** xuất hiện ở: onboarding, empty state, milestone celebration — không spam ở mọi màn hình.
+- **Lottie animation** được phép loop nhưng phải dừng khi user `prefers-reduced-motion`.
+
+### Quy định cho Teens (Dark theme)
+
+- **Icon outlined trên dark background** phải có stroke ≥ 2px để đủ visible.
+- **Tránh icon filled với màu rực** trên dark theme — gây glare.
+- **Illustration với gradient** phải có version dark mode riêng — không dùng gradient sáng trên màn dark.
+
+### Quy định cho Teacher/Admin
+
+- **Icon library duy nhất** (`Phosphor` hoặc `Lucide`) — không trộn lẫn icon từ nhiều bộ.
+- **Icon có nghĩa nghiệp vụ** (chấm bài, xuất Excel, đồng bộ) phải có **tooltip giải thích** khi hover.
+- **Icon trong DataTable header** kèm aria-label rõ ràng — vì table có thể hiển thị 20\+ icon cột.
+
+### Animation Standards (Lottie)
+
+| Yêu cầu | Quy định |
+| --- | --- |
+| **Max duration loop** | 3–5s |
+| **Max file size** | 100KB |
+| **Trigger** | Visible on screen _(IntersectionObserver)_, không autoplay nếu off-screen |
+| **Reduced motion** | Tự động convert sang static SVG fallback |
+
+```tsx
+import { useReducedMotion } from '@ovi/hooks';
+
+function CelebrationLottie() {
+  const reducedMotion = useReducedMotion();
+
+  if (reducedMotion) {
+    return <Illustration scene="celebration-static" />;
+  }
+  return <Lottie src="/lottie/celebration.json" loop />;
+}
+```
+
+<Warning>
+  **Không dùng GIF cho icon/illustration.** Lottie có file size nhỏ hơn 90%, scalable, và hỗ trợ reduced-motion fallback. GIF là legacy, không accessible.
+</Warning>
+
+## Bảng Component Reference
+
+| Component | Icon size | Style | Illustration |
+| --- | --- | --- | --- |
+| `<Button>` | sm/md tuỳ button size | theo theme | — |
+| `<IconButton>` | md (Kids: lg) | theo theme | — |
+| `<Tab>` | md | theo theme | — |
+| `<List Item>` | md | theo theme | — |
+| `<Empty State>` | — | — | size `scene` |
+| `<Onboarding screen>` | — | — | size `hero` |
+| `<Modal Success>`_(Kids)_ | — | — | size `spot` |
+| `<Toast>` | sm | theo theme | — |
+| `<Alert Banner>` | md | theo theme | — |
+
+## Do's & Don'ts
+
+| ✅ Do | ❌ Don't |
+| --- | --- |
+| Dùng 1 icon library duy nhất / theme | Trộn icon Material \+ Lucide \+ Phosphor |
+| Icon decorative có `aria-hidden="true"` | Để screen reader đọc icon trang trí |
+| Icon functional có `aria-label` | IconButton không có label |
+| Lottie thay GIF | Dùng GIF cho animation |
+| Tôn trọng reduced-motion | Auto-loop Lottie bất chấp setting |
+| Mascot Kids xuất hiện đúng moment | Spam mascot ở mọi màn hình |
+| Touch target Kids ≥ 56×56 | Icon 24px với touch target 24px |
+| Bind `style` icon tới Variable theme | Hard-code variant filled/outlined |
+
+<Tip>
+  **Quy tắc chọn icon mới**: (1) Đã có trong library hiện tại chưa? (2) Có phải metaphor phổ quát (≥ 80% người dùng nhận ra)? (3) Có 2 variants filled/outlined? (4) File SVG ≤ 4KB? (5) Optimized qua SVGO? Đủ 5 ✅ — đề xuất qua Contribution Guide.
+</Tip>
