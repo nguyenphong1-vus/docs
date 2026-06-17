@@ -1,0 +1,120 @@
+---
+title: "Error Messages"
+description: "Cách viết câu báo lỗi không gây nản lòng"
+icon: "triangle-exclamation"
+---
+
+## Tổng quan
+
+Trong sản phẩm giáo dục, **một câu báo lỗi sai cách có thể phá huỷ động lực học tập**. Trẻ em đặc biệt nhạy cảm — một dòng "Sai!" đỏ chói có thể khiến em không bao giờ mở lại app.
+
+Triết lý của OVI: **Lỗi không phải sự cố — lỗi là cơ hội học**. Mọi câu báo lỗi phải:
+
+1. **Rõ ràng** — chuyện gì vừa xảy ra?
+2. **Hữu ích** — người dùng cần làm gì tiếp?
+3. **Tôn trọng** — không phán xét, không đổ lỗi.
+
+## Công thức viết Error Message
+
+<ResponseField name="What" type="Phần 1">
+  Mô tả ngắn gọn điều gì đã xảy ra. Tránh thuật ngữ kỹ thuật cho Kids/Teens.
+</ResponseField>
+
+<ResponseField name="Why (tuỳ chọn)" type="Phần 2">
+  Giải thích lý do nếu giúp người dùng hiểu — nhưng không sa đà chi tiết kỹ thuật.
+</ResponseField>
+
+<ResponseField name="How" type="Phần 3">
+  Đưa hành động cụ thể để khắc phục. Đây là **phần quan trọng nhất**.
+</ResponseField>
+
+**Ví dụ chuẩn (Teacher/Admin):**
+
+> _"Mất kết nối mạng. Kiểm tra Wi-Fi và thử lại."_ — What (mất kết nối) \+ How (kiểm tra Wi-Fi, thử lại)
+
+## Bảng quy tắc theo nhóm đối tượng
+
+### OVI Kids
+
+<ResponseField name="Nguyên tắc" type="Kids">
+  Không dùng từ "sai", "lỗi", "không hợp lệ". Thay bằng ngôn ngữ động viên \+ emoji nhẹ. Câu ≤ 10 từ.
+</ResponseField>
+
+| Tình huống | ✅ Nên viết | ❌ Không nên |
+| --- | --- | --- |
+| Trả lời sai | "Gần đúng rồi! Thử lại nhé 💪" | "Sai! Vui lòng nhập lại." |
+| Hết giờ | "Ôi, hết giờ rồi! Thử lại nha!" | "Timeout: phiên đã hết hạn." |
+| Mạng yếu | "Mạng hơi chậm, đợi OVI xíu nhé!" | "Lỗi kết nối ERR\_NETWORK." |
+| Sai mật khẩu | "Hông đúng rồi đó! Thử lại nha." | "Mật khẩu không hợp lệ." |
+| Bỏ trống ô | "Còn trống một ô đó con!" | "Trường bắt buộc." |
+
+### OVI Teens
+
+<ResponseField name="Nguyên tắc" type="Teens">
+  Trung thực, không vòng vo. Tôn trọng — không "lên lớp". Chỉ rõ vấn đề và giải pháp. Tránh emoji buồn bã.
+</ResponseField>
+
+| Tình huống | ✅ Nên viết | ❌ Không nên |
+| --- | --- | --- |
+| Trả lời sai | "Chưa đúng. Xem lại gợi ý nhé." | "Sai rồi 😢 Cố lên nha bạn!" |
+| Hết giờ | "Hết giờ. Thử lại khi sẵn sàng." | "Ôi! Bạn hết giờ rồi 😭" |
+| Mạng yếu | "Mạng yếu. Đang thử kết nối lại…" | "Mạng có vấn đề." |
+| Sai mật khẩu | "Mật khẩu chưa đúng. Còn 2 lần thử." | "Đăng nhập thất bại." |
+| Bỏ trống ô | "Vui lòng điền email." | "Trường bắt buộc." |
+
+### OVI Teacher/Admin
+
+<ResponseField name="Nguyên tắc" type="Teacher/Admin">
+  Cụ thể, có số liệu, có hành động. Chỉ rõ nguyên nhân nếu giúp khắc phục. Không emoji. Không "vui lòng" thừa.
+</ResponseField>
+
+| Tình huống | ✅ Nên viết | ❌ Không nên |
+| --- | --- | --- |
+| File sai định dạng | "Chỉ chấp nhận .xlsx, .csv (tối đa 10MB)." | "File không hợp lệ." |
+| Trùng tên | "Lớp 'Tiếng Anh 5A' đã tồn tại. Đổi tên khác." | "Tên đã được sử dụng." |
+| Không có quyền | "Cần quyền Admin. Liên hệ quản trị viên." | "Truy cập bị từ chối." |
+| Mạng yếu | "Mất kết nối. Tự động thử lại sau 30s." | "Đã xảy ra lỗi mạng." |
+| Validation form | "Email không đúng định dạng (vd: [ten@vus.edu.vn](mailto:ten@vus.edu.vn))." | "Email không hợp lệ." |
+| Lỗi server | "Lỗi máy chủ (500). Thử lại sau ít phút." | "Đã xảy ra lỗi không xác định." |
+
+## Phân loại Error theo mức độ
+
+| Mức độ | Khi dùng | Tone | Component |
+| --- | --- | --- | --- |
+| **Inline / Helper** | Validation form realtime | Nhẹ nhàng, gợi ý | `<InlineMessage>` |
+| **Toast** | Lỗi tạm thời, có thể bỏ qua | Ngắn gọn (≤ 8 từ) | `<Toast variant="error">` |
+| **Banner** | Lỗi ảnh hưởng cả màn hình | Rõ ràng, có CTA | `<AlertBanner>` |
+| **Modal** | Lỗi nghiêm trọng cần xác nhận | Trang trọng, đầy đủ ngữ cảnh | `<Modal>` |
+| **Empty Error State** | Không tải được dữ liệu | Trấn an \+ retry | `<EmptyState type="error">` |
+
+## Bảng đối chiếu nhanh: thuật ngữ thay thế
+
+| ❌ Tránh dùng | ✅ Thay bằng |
+| --- | --- |
+| "Lỗi", "Error" | "Chưa hoàn tất", "Couldn't complete" |
+| "Sai", "Wrong" | "Chưa đúng", "Not quite" |
+| "Thất bại", "Failed" | "Chưa thành công", "Didn't go through" |
+| "Không hợp lệ" | "Chưa đúng định dạng" \+ ví dụ cụ thể |
+| "Bắt buộc" | "Cần điền" / "Required" |
+| "Truy cập bị từ chối" | "Cần quyền …" \+ hành động |
+| "Lỗi không xác định" | Mã lỗi cụ thể \+ hướng dẫn liên hệ |
+
+## Do's & Don'ts
+
+| ✅ Do | ❌ Don't |
+| --- | --- |
+| Cho người dùng biết chính xác cần làm gì tiếp | Báo lỗi mơ hồ kiểu "Đã xảy ra lỗi" |
+| Đặt phần "How to fix" ở câu cuối, dễ thấy | Chôn cách khắc phục trong đoạn dài |
+| Dùng tone phù hợp với app con | Copy nguyên error message giữa Kids và Admin |
+| Cho ví dụ cụ thể: _"vd: [ten@vus.edu.vn](mailto:ten@vus.edu.vn)"_ | "Nhập email hợp lệ" mà không nói thế nào là hợp lệ |
+| Hiển thị số lần thử còn lại nếu có | Khoá tài khoản đột ngột không cảnh báo |
+| Cung cấp đường thoát: "Liên hệ hỗ trợ" | Để người dùng kẹt trong dead-end |
+| Test với người dùng thật, đặc biệt trẻ em | Giả định trẻ hiểu thuật ngữ kỹ thuật |
+
+<Warning>
+  Không bao giờ đổ lỗi cho người dùng. ❌ "Bạn đã nhập sai" → ✅ "Mật khẩu chưa đúng". Sự khác biệt nhỏ về ngôn ngữ tạo ra sự khác biệt lớn về cảm xúc.
+</Warning>
+
+<Tip>
+  **Checklist trước khi ship error message**: (1) Người dùng có hiểu chuyện gì vừa xảy ra? (2) Họ biết phải làm gì tiếp không? (3) Câu chữ có phù hợp tone của app con? (4) Có đường thoát/liên hệ hỗ trợ? Đủ 4 ✅ — sẵn sàng ship.
+</Tip>

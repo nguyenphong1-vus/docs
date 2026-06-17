@@ -1,0 +1,81 @@
+---
+title: "Welcome & Overview"
+description: "Giới thiệu tổng quan về OVI Design System"
+icon: "hand-wave"
+---
+
+## Overview
+
+**OVI Design System** là hệ thống thiết kế hợp nhất phục vụ toàn bộ hệ sinh thái sản phẩm giáo dục của VUS — bao gồm các ứng dụng cho **Học sinh (Kids/Teens)**, **Giáo viên** và **Quản trị viên** trên cả nền tảng Web và Mobile.
+
+Hệ thống cung cấp một nguồn tham chiếu duy nhất (single source of truth) cho:
+
+- **Design Tokens** — màu sắc, typography, spacing, radius, elevation được đồng bộ từ Figma Variables.
+- **Component Library** — thư viện thành phần UI tái sử dụng được, đã chuẩn hóa hành vi và trạng thái.
+- **UX Writing & Brand Voice** — quy tắc viết nội dung phù hợp với từng nhóm đối tượng người dùng.
+- **Platform Patterns** — mẫu thiết kế đặc thù cho Web Responsive và Mobile/Tablet Touch.
+
+Mục tiêu cuối cùng: **rút ngắn thời gian thiết kế–phát triển**, **đảm bảo trải nghiệm nhất quán** và **giữ vững bản sắc thương hiệu OVI** xuyên suốt mọi điểm chạm với người dùng.
+
+## Core Values
+
+<CardGroup cols={2}>
+  <Card title="Consistency" icon="grid-2">
+    Một ngôn ngữ thiết kế duy nhất xuyên suốt mọi sản phẩm, mọi nền tảng — giúp người dùng cảm thấy quen thuộc ngay từ lần đầu sử dụng.
+  </Card>
+
+  <Card title="Accessibility" icon="universal-access">
+    Thiết kế cho mọi đối tượng, đặc biệt ưu tiên trẻ em với touch target lớn, contrast đạt WCAG AA và ngôn ngữ dễ hiểu.
+  </Card>
+
+  <Card title="Scalability" icon="layer-group">
+    Cấu trúc token-based và component-driven cho phép mở rộng nhanh sang sản phẩm mới mà không phá vỡ hệ thống hiện có.
+  </Card>
+
+  <Card title="Joyful Learning" icon="face-smile-beam">
+    Mỗi tương tác đều khơi gợi cảm hứng học tập — thông qua microcopy tích cực, animation tinh tế và illustration đặc trưng.
+  </Card>
+</CardGroup>
+
+## Application
+
+### Cho Designer
+
+1. **Khởi đầu** từ Figma Library của OVI — không tạo style hay component mới khi đã có sẵn.
+2. **Sử dụng Design Tokens** thay vì giá trị cứng (hex, px) để đảm bảo theme switching hoạt động chính xác.
+3. **Tham chiếu Voice & Tone** phù hợp với app đang thiết kế (Kids / Teens / Teacher–Admin).
+4. **Đề xuất component mới** qua Contribution Guide nếu use case chưa được hỗ trợ.
+
+### Cho Developer
+
+1. **Import token** từ package `@ovi/design-tokens` — không hard-code giá trị.
+2. **Sử dụng component library** chính thức; chỉ extend khi thực sự cần thiết.
+3. **Đồng bộ với Figma** thông qua handoff JSON (xem mục _Design Tokens Workflow_).
+4. **Tuân thủ breakpoints** và touch target đã định nghĩa trong _Platform Patterns_.
+
+### Áp dụng cho Web
+
+- Ưu tiên layout `Sidebar + Top Navbar` cho Portal của Giáo viên/Admin.
+- Sử dụng `Data Table`, `Breadcrumbs`, `Pagination` cho luồng quản lý dữ liệu.
+- Tận dụng không gian màn hình rộng — tránh ép layout mobile lên desktop.
+
+### Áp dụng cho App
+
+- Sử dụng `Bottom Navigation` và `Bottom Sheet` cho luồng chính của học sinh.
+- Touch target tối thiểu **48×48dp** (Kids App: **56×56dp**).
+- Tôn trọng **Safe Area** trên iOS và **Gesture Area** trên Android.
+
+## Do's & Don'ts
+
+| ✅ Do | ❌ Don't |
+| --- | --- |
+| Sử dụng token `color.primary.500` cho CTA chính | Hard-code `#16A34A` trực tiếp trong code/design |
+| Tham chiếu component `<Button variant="primary">` | Tự tạo button mới với style tùy biến |
+| Viết microcopy theo Voice phù hợp với từng app | Dùng chung một giọng văn cho cả Kids và Admin |
+| Đề xuất bổ sung qua Contribution Guide | Chỉnh sửa trực tiếp Figma Library mà không review |
+| Test với người dùng thật trước khi ship | Giả định trẻ em sẽ hiểu UI như người lớn |
+| Đồng bộ token Figma → Dev định kỳ | Để Figma và codebase lệch version quá 1 sprint |
+
+<Tip>
+  Mới bắt đầu? Đọc tiếp [**Design Principles**](/getting-started/design-principles) để nắm các nguyên tắc thiết kế nền tảng trước khi đi sâu vào component.
+</Tip>

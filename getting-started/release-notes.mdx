@@ -1,0 +1,123 @@
+---
+title: "Release Notes"
+description: "Lịch sử cập nhật phiên bản"
+icon: "clipboard-list"
+---
+
+## Overview
+
+**Release Notes** ghi lại toàn bộ thay đổi của OVI Design System theo từng phiên bản — bao gồm component mới, cải tiến, sửa lỗi, và breaking changes. Đây là tài liệu tham chiếu chính thức để đội ngũ Design – Engineering biết **điều gì thay đổi**, **khi nào**, và **cần migrate ra sao**.
+
+Hệ thống tuân thủ [**Semantic Versioning**](https://semver.org/) với định dạng `MAJOR.MINOR.PATCH`:
+
+- **MAJOR** — breaking change, yêu cầu migration.
+- **MINOR** — thêm tính năng/component mới, backwards-compatible.
+- **PATCH** — sửa lỗi, không ảnh hưởng API.
+
+## Core Values
+
+<CardGroup cols={2}>
+  <Card title="Transparent" icon="eye">
+    Mọi thay đổi đều được công khai, kể cả các quyết định bị revert. Không có "silent update".
+  </Card>
+
+  <Card title="Predictable" icon="calendar-check">
+    Release theo nhịp cố định: PATCH hàng tuần (Thứ Tư), MINOR hàng tháng, MAJOR theo quý — đội triển khai có thể plan trước.
+  </Card>
+
+  <Card title="Migration-Friendly" icon="route">
+    Mọi breaking change đều đi kèm migration guide chi tiết và codemod (nếu có) để giảm chi phí cập nhật.
+  </Card>
+
+  <Card title="Searchable History" icon="magnifying-glass">
+    Lịch sử được tag theo component, platform, và loại thay đổi — dễ dàng truy ngược nguyên nhân của một regression.
+  </Card>
+</CardGroup>
+
+## Application
+
+### Cách đọc Release Notes
+
+Mỗi entry tuân theo cấu trúc:
+
+- 🚀 **Added** — tính năng/component mới
+- ✨ **Improved** — cải tiến component có sẵn
+- 🐛 **Fixed** — sửa lỗi
+- ⚠️ **Breaking** — thay đổi yêu cầu migration
+- 🗑️ **Deprecated** — sắp loại bỏ, có thay thế
+
+### Cách áp dụng cho Web
+
+1. Kiểm tra phiên bản đang dùng: `npm list @ovi/ui-web`.
+2. Đọc release notes giữa version hiện tại và version mới nhất.
+3. Cập nhật: `npm update @ovi/ui-web@latest` (cho MINOR/PATCH) hoặc theo migration guide (cho MAJOR).
+4. Chạy visual regression test trước khi deploy.
+
+### Cách áp dụng cho App
+
+1. Kiểm tra phiên bản: `npm list @ovi/ui-mobile`.
+2. Cập nhật token trước, component sau — tránh xung đột style.
+3. Test trên cả iOS & Android, chú ý đặc biệt các thay đổi về animation và safe area.
+4. Ship qua **OTA (CodePush)** nếu chỉ là PATCH; cần build mới cho MINOR/MAJOR có thay đổi native.
+
+---
+
+## Version History
+
+### `v1.2.0` — 2026-06-10
+
+🚀 **Added**
+
+- Component `Segmented Control` (Web \+ App)
+- Token group `radius.kids` cho biến thể bo góc lớn của Kids App
+
+✨ **Improved**
+
+- `Button` — tăng touch target trên mobile từ 44dp lên 48dp (Kids: 56dp)
+- `Toast` — thêm prop `duration` mặc định 3000ms
+
+🐛 **Fixed**
+
+- `Data Table` — sửa lỗi sticky header trên Safari iOS
+- `Bottom Sheet` — gesture đôi khi không nhận trên Android 14
+
+### `v1.1.2` — 2026-05-28
+
+🐛 **Fixed**
+
+- `Modal` — focus trap rò rỉ khi đóng bằng `Escape`
+- `Avatar` — fallback initials không hiển thị đúng với tên có dấu tiếng Việt
+
+### `v1.1.0` — 2026-05-07
+
+🚀 **Added**
+
+- Component `OTP Input` cho luồng verify tài khoản học sinh/giáo viên
+- Component `Skeleton Loader` với 4 variants
+
+⚠️ **Breaking**
+
+- `IconButton` — prop `size="md"` đổi thành `size="medium"`. Xem [Migration Guide v1.1](/getting-started/release-notes#migration-v1-1).
+
+### `v1.0.0` — 2026-04-01
+
+🚀 **Initial Release**
+
+- 41 components core
+- Design tokens cho 3 themes: Kids, Teens, Teacher/Admin
+- Tài liệu Mintlify đầy đủ
+
+## Do's & Don'ts
+
+| ✅ Do | ❌ Don't |
+| --- | --- |
+| Đọc release notes trước khi update version | Update mù vì "thấy có version mới" |
+| Cập nhật MINOR/PATCH thường xuyên (≤ 2 tuần) | Để version tụt hậu \> 6 tháng rồi update một lần |
+| Theo dõi tag `Deprecated` để chủ động migrate | Đợi component bị xoá mới bắt đầu sửa |
+| Báo cáo regression qua issue tracker với version cụ thể | Báo "không hoạt động" mà không nêu version |
+| Lock version trong production (`package-lock.json`) | Dùng `^` cho MAJOR trong production |
+| Test breaking change trên staging trước | Deploy thẳng lên production sau MAJOR update |
+
+<Note>
+  Đăng ký nhận thông báo release qua Slack channel `#design-system-releases` hoặc RSS feed tại `/releases.xml` để không bỏ lỡ breaking changes.
+</Note>

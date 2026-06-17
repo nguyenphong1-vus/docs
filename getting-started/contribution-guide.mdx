@@ -1,0 +1,110 @@
+---
+title: "Contribution Guide"
+description: "Figma & Dev workflow"
+icon: "code-pull-request"
+---
+
+## Overview
+
+**Contribution Guide** mô tả quy trình đề xuất, review và merge các thay đổi vào OVI Design System — từ một biến thể button mới trong Figma cho đến một component được code hoá và publish lên npm.
+
+Hệ thống được vận hành theo mô hình **federated contribution**: bất kỳ designer/developer nào trong tổ chức đều có thể đóng góp, nhưng mọi thay đổi đều đi qua một quy trình review chuẩn để đảm bảo chất lượng và tính nhất quán.
+
+Hai thành phần chính được đồng bộ:
+
+- **Figma Library** — nguồn gốc của Design Tokens, Components, Variants.
+- **Code Repository** — implementation của tokens & components, publish dưới dạng npm package.
+
+## Core Values
+
+<CardGroup cols={2}>
+  <Card title="Single Source of Truth" icon="database">
+    Figma là nguồn duy nhất cho design tokens; Code repo là nguồn duy nhất cho implementation. Hai nguồn đồng bộ qua handoff JSON, không cập nhật song song thủ công.
+  </Card>
+
+  <Card title="Review Before Merge" icon="user-check">
+    Mọi đề xuất đều cần ít nhất 1 Design Reviewer \+ 1 Engineering Reviewer chấp thuận trước khi vào main library.
+  </Card>
+
+  <Card title="Document as You Build" icon="book-open">
+    Component chỉ được merge khi đã có tài liệu Mintlify đi kèm — usage, props/variants, và Do's & Don'ts.
+  </Card>
+
+  <Card title="Versioned & Backwards-Compatible" icon="code-branch">
+    Tuân thủ SemVer. Breaking changes phải có migration guide và thông báo trước ít nhất 1 sprint.
+  </Card>
+</CardGroup>
+
+## Application
+
+### Figma Workflow
+
+<Steps>
+  <Step title="Propose">
+    Tạo file **Proposal** trong Figma project `OVI / Proposals`. Mô tả vấn đề, use case, và mock-up đề xuất.
+  </Step>
+  <Step title="Review">
+    Tag `@design-system-team` để review trong sync hàng tuần. Reviewer kiểm tra: token usage, accessibility, consistency.
+  </Step>
+  <Step title="Iterate">
+    Cập nhật theo feedback. Khi được approve, di chuyển sang Figma project `OVI / Library` ở trạng thái _Draft_.
+  </Step>
+  <Step title="Publish">
+    Library Maintainer publish component vào Main Library. Thông báo trên kênh `#design-system` của Slack.
+  </Step>
+</Steps>
+
+### Dev Workflow
+
+<Steps>
+  <Step title="Branch">
+    Tạo branch `feat/<component-name>` hoặc `fix/<component-name>` từ `main` trong repo `ovi-design-system`.
+  </Step>
+  <Step title="Implement">
+    Code component khớp với Figma spec. Sử dụng token từ `@ovi/design-tokens`, không hard-code.
+  </Step>
+  <Step title="Document">
+    Cập nhật/tạo trang Mintlify tương ứng trong `/components`. Bao gồm: live preview, props table, examples.
+  </Step>
+  <Step title="Test">
+    Viết unit test (Jest) \+ visual regression test (Chromatic). Đảm bảo coverage ≥ 80%.
+  </Step>
+  <Step title="PR & Review">
+    Mở Pull Request, request review từ ít nhất 1 Engineer \+ 1 Designer. Gắn label `breaking` nếu có breaking change.
+  </Step>
+  <Step title="Release">
+    Sau khi merge, CI tự động bump version theo SemVer và publish lên npm registry nội bộ.
+  </Step>
+</Steps>
+
+### Áp dụng cho Web
+
+- Component web build với **React \+ TypeScript**, export từ `@ovi/ui-web`.
+- Style sử dụng **CSS-in-JS** (Emotion) đọc từ `@ovi/design-tokens`.
+- Storybook dùng để preview & test trước khi merge.
+
+### Áp dụng cho App
+
+- Component mobile build với **React Native**, export từ `@ovi/ui-mobile`.
+- Đảm bảo platform parity (iOS & Android) — test trên cả hai trước khi PR.
+- Sử dụng `react-native-reanimated` cho animation phức tạp; tránh JS animation cho luồng trẻ em.
+
+## Do's & Don'ts
+
+| ✅ Do | ❌ Don't |
+| --- | --- |
+| Đề xuất component mới qua file Proposal | Đẩy thẳng component mới vào Main Library |
+| Đặt tên component theo convention `PascalCase` | Đặt tên tự do như `btn_v2`, `MyButton` |
+| Đồng bộ token Figma → Code qua handoff JSON | Sửa tay giá trị token trong code |
+| Viết tài liệu Mintlify trong cùng PR | Hứa "sẽ document sau" |
+| Tag breaking changes trong PR title | Merge breaking change im lặng vào minor version |
+| Test trên cả Web \+ Mobile khi áp dụng cross-platform | Chỉ test một nền tảng rồi ship |
+| Discuss trong `#design-system` trước khi đề xuất lớn | Tạo Proposal mà không tham khảo tiền lệ |
+
+<Warning>
+  Không bao giờ chỉnh sửa component trong **Main Library** mà không qua quy trình review. Một thay đổi nhỏ có thể ảnh hưởng đến hàng trăm màn hình đang dùng component đó.
+</Warning>
+
+<Tip>
+  Cần đề xuất nhanh? Mở thread trong Slack `#design-system-proposals` với 3 thông tin: **Vấn đề – Use case – Mock-up sơ bộ**. Team sẽ phản hồi trong vòng 24 giờ làm việc.
+</Tip>

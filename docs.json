@@ -1,7 +1,7 @@
 {
   "$schema": "https://mintlify.com/docs.json",
   "theme": "mint",
-  "name": "Mintlify Starter Kit",
+  "name": "OVI Ecosystem",
   "colors": {
     "primary": "#16A34A",
     "light": "#07C983",
@@ -18,32 +18,167 @@
         ]
       }
     ],
-    "global": {
-      "anchors": [
-        {
-          "anchor": "Documentation",
-          "href": "https://mintlify.com/docs",
-          "icon": "book-open-cover"
-        },
-        {
-          "anchor": "Blog",
-          "href": "https://mintlify.com/blog",
-          "icon": "newspaper"
-        }
-      ]
-    }
+    "groups": [
+      {
+        "group": "Getting Started",
+        "icon": "rocket",
+        "pages": [
+          "getting-started/welcome",
+          "getting-started/design-principles",
+          "getting-started/contribution-guide",
+          "getting-started/release-notes"
+        ]
+      },
+      {
+        "group": "Brand Guidelines & UX Writing",
+        "icon": "feather",
+        "pages": [
+          "brand/brand-identity",
+          {
+            "group": "Voice & Tone Rules",
+            "icon": "comments",
+            "pages": [
+              "brand/voice-tone/ovi-kids",
+              "brand/voice-tone/ovi-teens",
+              "brand/voice-tone/teacher-admin"
+            ]
+          },
+          {
+            "group": "UX Writing Standards",
+            "icon": "pen-nib",
+            "pages": [
+              "brand/ux-writing/capitalization-punctuation",
+              "brand/ux-writing/error-messages",
+              "brand/ux-writing/success-microcopy",
+              "brand/ux-writing/button-cta-labels"
+            ]
+          }
+        ]
+      },
+      {
+        "group": "Foundations & Design Tokens",
+        "icon": "layer-group",
+        "pages": [
+          "foundations/colors-themes",
+          "foundations/typography",
+          "foundations/spacing-grid",
+          "foundations/radius-borders",
+          "foundations/shadows-elevation",
+          "foundations/iconography-illustrations"
+        ]
+      },
+      {
+        "group": "Components",
+        "icon": "puzzle-piece",
+        "pages": [
+          {
+            "group": "Actions",
+            "icon": "hand-pointer",
+            "pages": [
+              "components/actions/button",
+              "components/actions/icon-button",
+              "components/actions/button-group",
+              "components/actions/loading-button"
+            ]
+          },
+          {
+            "group": "Inputs & Selectors",
+            "icon": "keyboard",
+            "pages": [
+              "components/inputs/text-input-textarea",
+              "components/inputs/password-input",
+              "components/inputs/search-input",
+              "components/inputs/otp-input",
+              "components/inputs/checkbox",
+              "components/inputs/radio-button",
+              "components/inputs/switch-toggle",
+              "components/inputs/segmented-control",
+              "components/inputs/choice-chips-tags"
+            ]
+          },
+          {
+            "group": "Pickers & Form Controls",
+            "icon": "sliders",
+            "pages": [
+              "components/pickers/date-time-picker",
+              "components/pickers/file-uploader",
+              "components/pickers/slider-stepper"
+            ]
+          },
+          {
+            "group": "Navigation",
+            "icon": "compass",
+            "pages": [
+              "components/navigation/top-navbar",
+              "components/navigation/sidebar-drawer",
+              "components/navigation/bottom-navigation",
+              "components/navigation/tabs",
+              "components/navigation/breadcrumbs",
+              "components/navigation/pagination",
+              "components/navigation/speed-dial-fab"
+            ]
+          },
+          {
+            "group": "Data Display",
+            "icon": "table-cells",
+            "pages": [
+              "components/data-display/avatar",
+              "components/data-display/badge",
+              "components/data-display/cards",
+              "components/data-display/accordion-collapse",
+              "components/data-display/data-table",
+              "components/data-display/list-listitem",
+              "components/data-display/timeline"
+            ]
+          },
+          {
+            "group": "Feedback & Indicators",
+            "icon": "bell",
+            "pages": [
+              "components/feedback/alert-banner",
+              "components/feedback/toast-snackbar",
+              "components/feedback/inline-message",
+              "components/feedback/progress",
+              "components/feedback/skeleton-loader",
+              "components/feedback/empty-state"
+            ]
+          },
+          {
+            "group": "Overlays & Containers",
+            "icon": "window-restore",
+            "pages": [
+              "components/overlays/modal-dialog",
+              "components/overlays/bottom-sheet",
+              "components/overlays/popover",
+              "components/overlays/tooltip",
+              "components/overlays/media-viewer"
+            ]
+          }
+        ]
+      },
+      {
+        "group": "Platform Patterns",
+        "icon": "display",
+        "pages": [
+          "platform-patterns/web-responsive",
+          "platform-patterns/mobile-tablet-touch"
+        ]
+      },
+      {
+        "group": "Design Tokens Workflow",
+        "icon": "code-merge",
+        "pages": [
+          "design-tokens-workflow/variables-sync-mintlify"
+        ]
+      }
+    ]
   },
   "logo": {
     "light": "/logo/light.svg",
     "dark": "/logo/dark.svg"
   },
   "navbar": {
-    "links": [
-      {
-        "label": "Support",
-        "href": "mailto:hi@mintlify.com"
-      }
-    ],
+    "links": [],
     "primary": {
       "type": "button",
       "label": "Dashboard",
@@ -56,17 +191,25 @@
       "view",
       "chatgpt",
       "claude",
-      "perplexity",
       "mcp",
-      "cursor",
       "vscode"
     ]
   },
   "footer": {
     "socials": {
-      "x": "https://x.com/mintlify",
-      "github": "https://github.com/mintlify",
-      "linkedin": "https://linkedin.com/company/mintlify"
+      "website": "https://ovi.vus.edu.vn/"
     }
+  },
+  "interaction": {
+    "drilldown": true
+  },
+  "metadata": {
+    "timestamp": true
+  },
+  "styling": {
+    "eyebrows": "section"
+  },
+  "background": {
+    "decoration": "grid"
   }
 }

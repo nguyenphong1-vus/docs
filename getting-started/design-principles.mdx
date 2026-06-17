@@ -1,0 +1,68 @@
+---
+title: "Design Principles"
+description: "Các nguyên tắc thiết kế cốt lõi"
+icon: "compass"
+---
+
+## Overview
+
+**Design Principles** là tập hợp các nguyên tắc nền tảng định hình cách OVI thiết kế sản phẩm. Đây không phải là quy tắc cứng, mà là **bộ la bàn ra quyết định** giúp đội ngũ Design – Product – Engineering có cùng một hệ tham chiếu khi đứng trước các tradeoff.
+
+Mọi component, mọi pattern, mọi dòng microcopy trong hệ thống OVI đều phải truy nguyên về được ít nhất một nguyên tắc dưới đây. Nếu một thiết kế không thể giải thích bằng các nguyên tắc này, nó cần được xem xét lại.
+
+## Core Values
+
+<CardGroup cols={2}>
+  <Card title="Learner-First" icon="graduation-cap">
+    Mọi quyết định thiết kế đều bắt đầu từ câu hỏi: _"Điều này có giúp người học tiến bộ không?"_. Ưu tiên sự rõ ràng, khích lệ và giảm tải nhận thức (cognitive load).
+  </Card>
+
+  <Card title="Clarity over Cleverness" icon="lightbulb">
+    Chọn giải pháp dễ hiểu thay vì giải pháp ấn tượng. Một nút bấm rõ ràng luôn tốt hơn một animation phức tạp khiến người dùng bối rối.
+  </Card>
+
+  <Card title="Consistent yet Contextual" icon="shapes">
+    Giữ vững ngôn ngữ chung (token, component) nhưng linh hoạt theo ngữ cảnh — Kids App vui nhộn, Teacher Portal nghiêm túc, nhưng vẫn cùng một DNA.
+  </Card>
+
+  <Card title="Inclusive by Default" icon="universal-access">
+    Thiết kế đạt WCAG AA tối thiểu, hỗ trợ screen reader, contrast đủ, touch target đủ lớn — không phải bước "thêm vào sau", mà là yêu cầu mặc định.
+  </Card>
+</CardGroup>
+
+## Application
+
+### Áp dụng vào quy trình thiết kế
+
+1. **Define** — Trước khi sketch, xác định nguyên tắc nào đang được áp dụng cho luồng này.
+2. **Decide** — Khi gặp tradeoff (ví dụ: thẩm mỹ vs. hiệu suất), dùng thứ tự ưu tiên: _Learner-First → Clarity → Consistent → Inclusive_.
+3. **Defend** — Trong design critique, giải thích quyết định bằng nguyên tắc, không bằng cảm tính.
+
+### Áp dụng cho Web (Teacher/Admin Portal)
+
+- **Learner-First** dịch thành _Educator-First_: tối ưu hiệu suất tác vụ — chấm bài, giao bài, xem báo cáo phải nhanh và ít click.
+- **Clarity**: dùng `Data Table`, `Breadcrumbs`, `Filter Chips` để cấu trúc thông tin dày đặc một cách rõ ràng.
+- **Consistent**: tuân thủ layout `Sidebar + Top Navbar` để giáo viên không phải học lại UI khi chuyển module.
+
+### Áp dụng cho App (Kids/Teens)
+
+- **Learner-First**: ưu tiên animation phản hồi tức thì khi học sinh hoàn thành bài tập — củng cố hành vi tích cực.
+- **Clarity**: mỗi màn hình chỉ có **một CTA chính**; tránh nhồi nhét nhiều lựa chọn cùng cấp.
+- **Inclusive**: Kids App dùng touch target tối thiểu **56×56dp**, font tối thiểu **16sp**, contrast ≥ 4.5:1.
+- **Contextual**: Kids dùng illustration & emoji; Teens dùng iconography tinh giản, ngôn ngữ ngang hàng.
+
+## Do's & Don'ts
+
+| ✅ Do | ❌ Don't |
+| --- | --- |
+| Đặt mục tiêu của người học làm trung tâm | Thiết kế để "trông đẹp trên dribbble" |
+| Dùng từ ngữ đơn giản, câu ngắn cho Kids | Sao chép nguyên văn UX writing người lớn cho trẻ em |
+| Giữ component nhất quán giữa các app | Tạo biến thể mới chỉ để "khác biệt" |
+| Test contrast & screen reader trước khi ship | Coi accessibility là tính năng tùy chọn |
+| Giải thích quyết định bằng nguyên tắc cụ thể | Bảo vệ thiết kế bằng "tôi thấy nó đẹp" |
+| Ưu tiên hiệu suất tác vụ cho Teacher Portal | Bắt giáo viên click 5 lần để chấm 1 bài |
+| Animation có mục đích (feedback, transition) | Animation phô diễn làm chậm tương tác |
+
+<Note>
+  Khi hai nguyên tắc xung đột, **Inclusive by Default** luôn là sàn không thể nhân nhượng. Một thiết kế đẹp nhưng không accessible là một thiết kế thất bại.
+</Note>
