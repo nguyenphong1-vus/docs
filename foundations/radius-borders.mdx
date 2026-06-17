@@ -4,4 +4,302 @@ description: "Tùy biến độ bo góc theo từng App"
 icon: "border-all"
 ---
 
-# Radius & Borders
+## Tổng quan
+
+Radius và Border là tín hiệu **phi ngôn ngữ** mạnh mẽ định hình cảm xúc thương hiệu:
+
+- **Bo góc lớn** → thân thiện, an toàn, vui tươi (Kids).
+- **Bo góc trung bình** → hiện đại, năng động (Teens).
+- **Bo góc nhỏ** → chuyên nghiệp, đáng tin, hiệu quả (Teacher/Admin).
+
+Một component cùng nội dung có thể "biến hình" hoàn toàn chỉ qua thay đổi radius. Vì vậy, OVI quản lý radius theo mô hình **Multi-theme 3 tầng** trên Figma Variables — switch theme là switch luôn cảm xúc.
+
+## 1. Naming Convention — Mô hình 3 tầng
+
+### Tầng 1 — Primitive (Reference)
+
+```text
+ref.radius.0      →  0px
+ref.radius.1      →  2px
+ref.radius.2      →  4px
+ref.radius.3      →  8px
+ref.radius.4      →  12px
+ref.radius.5      →  16px
+ref.radius.6      →  20px
+ref.radius.7      →  24px
+ref.radius.full   →  9999px
+```
+
+```text
+ref.border.width.0    →  0px
+ref.border.width.1    →  1px
+ref.border.width.2    →  2px
+ref.border.width.3    →  3px
+ref.border.style.solid    →  solid
+ref.border.style.dashed   →  dashed
+```
+
+### Tầng 2 — Semantic (System)
+
+```text
+sys.radius.button
+sys.radius.input
+sys.radius.card
+sys.radius.modal
+sys.radius.chip
+sys.radius.avatar
+sys.radius.tooltip
+```
+
+```text
+sys.border.width.default
+sys.border.width.focus
+sys.border.style.default
+```
+
+### Tầng 3 — Component
+
+```text
+cmp.button.radius
+cmp.card.radius
+cmp.input.border-width
+cmp.input.border-width-focus
+cmp.modal.radius
+```
+
+## 2. Mapping Table — Theme Switching
+
+### Radius Tokens
+
+| Semantic Token | OVI Kids | OVI Teens | OVI Teacher/Admin |
+| --- | --- | --- | --- |
+| `sys.radius.button` | **16px**_(bo lớn, mềm mại)_ | **8px**_(trung bình)_ | **4px**_(nhỏ, chuyên nghiệp)_ |
+| `sys.radius.input` | 12px | 8px | 4px |
+| `sys.radius.card` | **20px** | 12px | **6px** |
+| `sys.radius.modal` | 24px | 16px | 8px |
+| `sys.radius.chip` | `full`_(pill 9999px)_ | `full` | 4px |
+| `sys.radius.avatar` | `full` | `full` | `full` |
+| `sys.radius.tooltip` | 12px | 8px | 4px |
+| `sys.radius.bottom-sheet` | 24px (top) | 16px (top) | 12px (top) |
+| `sys.radius.image-thumbnail` | 16px | 8px | 4px |
+
+### Border Tokens
+
+| Semantic Token | OVI Kids | OVI Teens | OVI Teacher/Admin |
+| --- | --- | --- | --- |
+| `sys.border.width.default` | 2px | 1px | 1px |
+| `sys.border.width.focus` | 3px | 2px | 2px |
+| `sys.border.width.divider` | 1px | 1px | 1px |
+| `sys.border.style.default` | solid | solid | solid |
+| `sys.border.style.dashed` | dashed | dashed | dashed |
+
+<Tip>
+  **Quan sát mô hình**: Kids dùng radius lớn (16–24px) \+ border dày (2px) → cảm giác "kẹo dẻo" an toàn. Teacher dùng radius nhỏ (4–6px) \+ border mỏng (1px) → cảm giác "tài liệu hành chính" tin cậy.
+</Tip>
+
+## 3. Cách sử dụng trong Code & Figma
+
+### Code — JSON Token & CSS
+
+<CodeGroup>
+
+```json tokens.radius.json
+{
+  "ref": {
+    "radius": {
+      "0":    { "value": "0px",    "type": "borderRadius" },
+      "2":    { "value": "4px",    "type": "borderRadius" },
+      "3":    { "value": "8px",    "type": "borderRadius" },
+      "4":    { "value": "12px",   "type": "borderRadius" },
+      "5":    { "value": "16px",   "type": "borderRadius" },
+      "7":    { "value": "24px",   "type": "borderRadius" },
+      "full": { "value": "9999px", "type": "borderRadius" }
+    },
+    "border": {
+      "width": {
+        "1": { "value": "1px", "type": "borderWidth" },
+        "2": { "value": "2px", "type": "borderWidth" },
+        "3": { "value": "3px", "type": "borderWidth" }
+      }
+    }
+  },
+  "sys": {
+    "radius": {
+      "button": { "value": "{ref.radius.5}", "type": "borderRadius" },
+      "card":   { "value": "{ref.radius.7}", "type": "borderRadius" },
+      "input":  { "value": "{ref.radius.4}", "type": "borderRadius" },
+      "chip":   { "value": "{ref.radius.full}", "type": "borderRadius" }
+    },
+    "border": {
+      "width": {
+        "default": { "value": "{ref.border.width.2}", "type": "borderWidth" },
+        "focus":   { "value": "{ref.border.width.3}", "type": "borderWidth" }
+      }
+    }
+  }
+}
+```
+
+```css radius.css
+/* OVI Kids */
+[data-theme="kids"] {
+  --sys-radius-button: 16px;
+  --sys-radius-input: 12px;
+  --sys-radius-card: 20px;
+  --sys-radius-modal: 24px;
+  --sys-radius-chip: 9999px;
+
+  --sys-border-width-default: 2px;
+  --sys-border-width-focus: 3px;
+}
+
+/* OVI Teens */
+[data-theme="teens"] {
+  --sys-radius-button: 8px;
+  --sys-radius-input: 8px;
+  --sys-radius-card: 12px;
+  --sys-radius-modal: 16px;
+  --sys-radius-chip: 9999px;
+
+  --sys-border-width-default: 1px;
+  --sys-border-width-focus: 2px;
+}
+
+/* OVI Teacher/Admin */
+[data-theme="teacher"] {
+  --sys-radius-button: 4px;
+  --sys-radius-input: 4px;
+  --sys-radius-card: 6px;
+  --sys-radius-modal: 8px;
+  --sys-radius-chip: 4px;
+
+  --sys-border-width-default: 1px;
+  --sys-border-width-focus: 2px;
+}
+```
+
+```tsx Button.tsx
+import styled from '@emotion/styled';
+
+export const Button = styled.button`
+  border-radius: var(--sys-radius-button);
+  border: var(--sys-border-width-default) solid var(--sys-color-border-strong);
+
+  &:focus-visible {
+    border-color: var(--sys-color-border-focus);
+    border-width: var(--sys-border-width-focus);
+    outline: none;
+  }
+`;
+
+export const Card = styled.div`
+  border-radius: var(--sys-radius-card);
+  border: 1px solid var(--sys-color-border-default);
+`;
+
+export const Chip = styled.span`
+  border-radius: var(--sys-radius-chip);
+  padding: 4px 12px;
+`;
+```
+
+</CodeGroup>
+
+### Figma — Variables & Auto Layout
+
+<Steps>
+  <Step title="Tạo Variable Collection">
+    Collection `OVI/Radius` với 3 modes Kids / Teens / Teacher.
+  </Step>
+  <Step title="Tạo tầng Primitive">
+    `ref/radius/2`, `ref/radius/3`, `ref/radius/full`… với cùng giá trị 3 modes.
+  </Step>
+  <Step title="Tạo tầng Semantic">
+    `sys/radius/button`, `sys/radius/card`… với alias trỏ về `ref`, **khác nhau 3 modes**.
+  </Step>
+  <Step title="Bind Corner Radius">
+    Select frame → click vào ô Corner Radius → chọn Variable. Khi switch mode, mọi component tự bo lại.
+  </Step>
+</Steps>
+
+<Note>
+  Trong Figma, để bind radius cho từng góc riêng (top-left khác bottom-right), dùng panel **Independent Corners** và bind từng giá trị tới biến tương ứng.
+</Note>
+
+## 4. Tiêu chuẩn Accessibility (WCAG)
+
+### Border & Focus Indicator
+
+| Tiêu chí | WCAG | OVI áp dụng |
+| --- | --- | --- |
+| **Focus indicator** WCAG 2.4.7 | Bắt buộc visible | ✅ Border 2px (Teens/Teacher) – 3px (Kids) |
+| **Focus contrast** WCAG 1.4.11 | ≥ 3:1 với background | ✅ 4.5:1 (Kids) – 3.8:1 (Teens/Teacher) |
+| **Non-text contrast** | UI border ≥ 3:1 | ✅ |
+| **Outline offset** | ≥ 2px | ✅ `outline-offset: 2px` |
+
+### Quy định riêng cho OVI Kids
+
+- **Border focus 3px** _(không phải 2px)_ — trẻ thị lực chưa hoàn thiện cần focus indicator rõ hơn.
+- **Tránh radius `full` cho text container** — bo tròn quá có thể cắt cụt phần descender của chữ tiếng Việt (g, p, q).
+- **Bo góc tối thiểu 8px** cho mọi clickable element — tạo cảm giác an toàn, "không sắc bén".
+
+### Quy định cho Teens (Dark theme)
+
+- **Border 1px solid `sys.color.border.default`** đủ tách biệt trên dark background. Không cần 2px.
+- **Focus border màu sáng hơn** background ít nhất 4.5:1 để nổi bật trên màn dark.
+
+### Quy định cho Teacher/Admin
+
+- **Radius nhỏ 4–6px** giúp scan bảng dữ liệu nhanh — radius lớn làm nhiễu mắt khi đọc data dense.
+- **Border 1px** tiêu chuẩn — đủ phân tách, không "ồn ào" trên màn workflow nhiều dữ liệu.
+- **Divider giữa rows** dùng `border-bottom: 1px solid` thay vì khoảng cách trắng — tiết kiệm không gian dọc.
+
+### Forced Colors Mode (Windows High Contrast)
+
+```css
+/* Đảm bảo border không bị mất trong High Contrast Mode */
+@media (forced-colors: active) {
+  button, .card, .input {
+    border: 1px solid CanvasText;
+  }
+  button:focus-visible {
+    outline: 2px solid Highlight;
+  }
+}
+```
+
+<Warning>
+  **Không dựa vào shadow/elevation duy nhất** để phân tách container. Người dùng High Contrast Mode sẽ mất shadow — luôn có border làm fallback.
+</Warning>
+
+## Bảng Component Reference (giá trị thực tế ship)
+
+| Component | Kids | Teens | Teacher |
+| --- | --- | --- | --- |
+| `<Button>` | 16px | 8px | 4px |
+| `<IconButton>` | 12px | 8px | 4px |
+| `<Input>` | 12px | 8px | 4px |
+| `<Card>` | 20px | 12px | 6px |
+| `<Modal>` | 24px | 16px | 8px |
+| `<BottomSheet>` (top) | 24px | 16px | 12px |
+| `<Chip>` | full (pill) | full | 4px |
+| `<Avatar>` | full | full | full |
+| `<Tooltip>` | 12px | 8px | 4px |
+| `<Toast>` | 16px | 12px | 6px |
+| `<Image>` thumbnail | 16px | 8px | 4px |
+
+## Do's & Don'ts
+
+| ✅ Do | ❌ Don't |
+| --- | --- |
+| Bind Corner Radius tới `sys.radius.*` | Gõ số cứng `border-radius: 12px` |
+| Border focus dày hơn border default | Border focus cùng độ dày (gây hard-to-spot) |
+| Có border làm fallback cho shadow | Chỉ dùng shadow để phân tách container |
+| Test High Contrast Mode trên Windows | Bỏ qua forced-colors mode |
+| Dùng `full` (9999px) cho avatar/chip | Dùng 50% — sai khi width ≠ height |
+| Radius `card` lớn hơn radius `button` lồng trong | Card 4px chứa button 16px (lệch tỉ lệ) |
+| Kids: radius ≥ 8px cho mọi clickable | Dùng radius 0 (góc vuông) cho UI Kids |
+
+<Tip>
+  **Quy tắc nest radius**: Khi component A chứa component B, `radius(A) ≥ radius(B) + padding`. Ví dụ: Card 20px chứa Button 16px với padding 8px → đẹp. Card 4px chứa Button 16px → lệch tỉ lệ.
+</Tip>

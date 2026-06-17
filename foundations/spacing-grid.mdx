@@ -4,4 +4,291 @@ description: "Hệ thống spacing và grid"
 icon: "grid"
 ---
 
-# Spacing & Grid Systems
+## Tổng quan
+
+Spacing là **nhịp điệu vô hình** của thiết kế. Trong sản phẩm OVI, spacing đóng vai trò đặc biệt quan trọng:
+
+- **Kids**: cần _breathing room_ lớn để giảm overload thị giác cho trẻ.
+- **Teens**: cân bằng giữa thoáng và hiện đại.
+- **Teacher/Admin**: tối ưu _information density_ — hiển thị nhiều dữ liệu mà vẫn dễ đọc.
+
+Hệ spacing OVI dựa trên đơn vị nền **4px** (`base unit`), tuân theo mô hình **Multi-theme 3 tầng** trên Figma Variables.
+
+## 1. Naming Convention — Mô hình 3 tầng
+
+### Tầng 1 — Primitive (Reference)
+
+Đặt theo `ref.spacing.{step}` với scale tăng dần.
+
+```text
+ref.spacing.0    →  0px
+ref.spacing.1    →  4px
+ref.spacing.2    →  8px
+ref.spacing.3    →  12px
+ref.spacing.4    →  16px
+ref.spacing.5    →  20px
+ref.spacing.6    →  24px
+ref.spacing.8    →  32px
+ref.spacing.10   →  40px
+ref.spacing.12   →  48px
+ref.spacing.16   →  64px
+ref.spacing.20   →  80px
+```
+
+### Tầng 2 — Semantic (System)
+
+Mang ý nghĩa sử dụng. Đặt theo `sys.spacing.{role}`.
+
+```text
+sys.spacing.inline-xs    →  khoảng cách giữa icon và text trong nút
+sys.spacing.inline-sm    →  giữa các từ tag, chip
+sys.spacing.stack-md     →  giữa các paragraph
+sys.spacing.stack-lg     →  giữa các section
+sys.spacing.inset-card   →  padding bên trong card
+sys.spacing.inset-modal  →  padding modal
+sys.spacing.layout-page  →  margin viền trang
+```
+
+### Tầng 3 — Component
+
+```text
+cmp.button.padding-x
+cmp.button.padding-y
+cmp.button.gap
+cmp.card.padding
+cmp.input.padding-x
+cmp.list-item.gap
+```
+
+<Note>
+  **Quy tắc**: Mọi giá trị spacing phải là **bội số của 4px**. Không có 5px, 7px, 13px. Điều này đảm bảo nhịp grid nhất quán trên cả Web lẫn App.
+</Note>
+
+## 2. Mapping Table — Theme Switching
+
+### Inline Spacing (Horizontal — giữa các phần tử cùng dòng)
+
+| Semantic Token | OVI Kids | OVI Teens | OVI Teacher/Admin |
+| --- | --- | --- | --- |
+| `sys.spacing.inline-xs` | 8px | 6px | 4px |
+| `sys.spacing.inline-sm` | 12px | 8px | 8px |
+| `sys.spacing.inline-md` | 16px | 12px | 12px |
+| `sys.spacing.inline-lg` | 24px | 16px | 16px |
+
+### Stack Spacing (Vertical — giữa các phần tử theo hàng dọc)
+
+| Semantic Token | OVI Kids | OVI Teens | OVI Teacher/Admin |
+| --- | --- | --- | --- |
+| `sys.spacing.stack-xs` | 8px | 6px | 4px |
+| `sys.spacing.stack-sm` | 16px | 12px | 8px |
+| `sys.spacing.stack-md` | 24px | 16px | 12px |
+| `sys.spacing.stack-lg` | 40px | 24px | 16px |
+| `sys.spacing.stack-xl` | 64px | 40px | 24px |
+
+### Inset (Padding nội dung trong container)
+
+| Semantic Token | OVI Kids | OVI Teens | OVI Teacher/Admin |
+| --- | --- | --- | --- |
+| `sys.spacing.inset-card` | 24px | 20px | 16px |
+| `sys.spacing.inset-modal` | 32px | 24px | 24px |
+| `sys.spacing.inset-button` | 16px / 12px | 16px / 10px | 12px / 8px |
+| `sys.spacing.inset-input` | 16px / 14px | 14px / 12px | 12px / 10px |
+
+### Layout (Margin viền trang)
+
+| Semantic Token | OVI Kids | OVI Teens | OVI Teacher/Admin |
+| --- | --- | --- | --- |
+| `sys.spacing.layout-page-mobile` | 20px | 16px | 16px |
+| `sys.spacing.layout-page-tablet` | 32px | 24px | 24px |
+| `sys.spacing.layout-page-desktop` | 64px | 48px | 32px |
+
+<Tip>
+  **Quan sát**: Giá trị Kids luôn lớn hơn ~1.5× so với Teacher/Admin. Đây là chủ ý — trẻ cần không gian thoáng để giảm tải nhận thức.
+</Tip>
+
+## Grid Systems
+
+### Web Grid
+
+| Breakpoint | OVI Kids | OVI Teens | OVI Teacher/Admin |
+| --- | --- | --- | --- |
+| **Mobile** (320–767px) | 4 cột / gutter 16px | 4 cột / gutter 16px | 4 cột / gutter 12px |
+| **Tablet** (768–1023px) | 8 cột / gutter 24px | 8 cột / gutter 20px | 8 cột / gutter 16px |
+| **Desktop** (1024–1439px) | 12 cột / gutter 32px | 12 cột / gutter 24px | 12 cột / gutter 24px |
+| **Wide** (≥ 1440px) | 12 cột / gutter 40px | 12 cột / gutter 32px | 12 cột / gutter 24px |
+
+### App Grid
+
+| Platform | Margin | Gutter | Columns |
+| --- | --- | --- | --- |
+| Mobile (Kids) | 20px | 16px | 4 |
+| Mobile (Teens) | 16px | 12px | 4 |
+| Tablet | 32px | 24px | 8 |
+
+## 3. Cách sử dụng trong Code & Figma
+
+### Code — JSON Token & CSS
+
+<CodeGroup>
+
+```json tokens.spacing.json
+{
+  "ref": {
+    "spacing": {
+      "0":  { "value": "0px",  "type": "spacing" },
+      "1":  { "value": "4px",  "type": "spacing" },
+      "2":  { "value": "8px",  "type": "spacing" },
+      "3":  { "value": "12px", "type": "spacing" },
+      "4":  { "value": "16px", "type": "spacing" },
+      "6":  { "value": "24px", "type": "spacing" },
+      "8":  { "value": "32px", "type": "spacing" },
+      "10": { "value": "40px", "type": "spacing" }
+    }
+  },
+  "sys": {
+    "spacing": {
+      "stack-md": { "value": "{ref.spacing.6}", "type": "spacing" },
+      "inset-card": { "value": "{ref.spacing.6}", "type": "spacing" },
+      "inline-md": { "value": "{ref.spacing.4}", "type": "spacing" }
+    }
+  },
+  "cmp": {
+    "card": {
+      "padding": { "value": "{sys.spacing.inset-card}", "type": "spacing" }
+    }
+  }
+}
+```
+
+```css spacing.css
+/* OVI Kids */
+[data-theme="kids"] {
+  --sys-spacing-stack-md: 24px;
+  --sys-spacing-inset-card: 24px;
+  --sys-spacing-inline-md: 16px;
+  --sys-spacing-layout-page-desktop: 64px;
+}
+
+/* OVI Teens */
+[data-theme="teens"] {
+  --sys-spacing-stack-md: 16px;
+  --sys-spacing-inset-card: 20px;
+  --sys-spacing-inline-md: 12px;
+  --sys-spacing-layout-page-desktop: 48px;
+}
+
+/* OVI Teacher/Admin */
+[data-theme="teacher"] {
+  --sys-spacing-stack-md: 12px;
+  --sys-spacing-inset-card: 16px;
+  --sys-spacing-inline-md: 12px;
+  --sys-spacing-layout-page-desktop: 32px;
+}
+```
+
+```tsx Stack.tsx
+import styled from '@emotion/styled';
+
+type Gap = 'xs' | 'sm' | 'md' | 'lg' | 'xl';
+
+export const Stack = styled.div<{ gap?: Gap }>`
+  display: flex;
+  flex-direction: column;
+  gap: var(--sys-spacing-stack-${(p) => p.gap ?? 'md'});
+`;
+
+export const Card = styled.div`
+  padding: var(--sys-spacing-inset-card);
+  background: var(--sys-color-background-surface);
+`;
+```
+
+```tsx Grid.tsx
+import styled from '@emotion/styled';
+
+export const PageContainer = styled.main`
+  padding-inline: var(--sys-spacing-layout-page-mobile);
+
+  @media (min-width: 768px) {
+    padding-inline: var(--sys-spacing-layout-page-tablet);
+  }
+  @media (min-width: 1024px) {
+    padding-inline: var(--sys-spacing-layout-page-desktop);
+  }
+`;
+```
+
+</CodeGroup>
+
+### Figma — Variables & Auto Layout
+
+<Steps>
+  <Step title="Tạo Variable Collection">
+    Tạo collection `OVI/Spacing` với 3 modes Kids / Teens / Teacher.
+  </Step>
+  <Step title="Tạo tầng Primitive">
+    Tạo `ref/spacing/1`, `ref/spacing/2`… với cùng giá trị ở 3 modes.
+  </Step>
+  <Step title="Tạo tầng Semantic">
+    Tạo `sys/spacing/stack-md`, `sys/spacing/inset-card`… với giá trị **alias** trỏ về `ref`, **khác nhau giữa 3 modes**.
+  </Step>
+  <Step title="Bind vào Auto Layout">
+    Trong Auto Layout, click số gap/padding → chọn Variable thay vì gõ số. Khi switch mode, layout tự co giãn.
+  </Step>
+</Steps>
+
+<Warning>
+  **Không gõ số cứng** vào Auto Layout. Mọi gap/padding phải bind tới `sys.spacing.*` để theme switch hoạt động.
+</Warning>
+
+## 4. Tiêu chuẩn Accessibility (WCAG)
+
+### Touch Target Size
+
+| Đối tượng | Min size | OVI áp dụng |
+| --- | --- | --- |
+| **WCAG 2.5.5 AAA** | 44×44px | ✅ |
+| **Material Design** | 48×48dp | ✅ |
+| **OVI Kids** | **56×56dp**_(stricter)_ | ✅ Kids App |
+| **Khoảng cách giữa 2 touch target** | ≥ 8px | ≥ 8px (Teens/Teacher) · ≥ 12px (Kids) |
+
+### Reading Comfort
+
+- **Line length**: tối đa 75 ký tự (~`max-width: 75ch`).
+- **Paragraph spacing**: ≥ 2× font-size.
+- **Section spacing**: tối thiểu `stack-lg` để phân tách rõ ràng.
+
+### Quy định riêng cho OVI Kids
+
+- **Inset-card tối thiểu 20px** — tránh nội dung dính sát viền gây "overflow visual".
+- **Touch target tối thiểu 56×56dp** — phù hợp với khả năng vận động tinh của trẻ.
+- **Khoảng cách giữa 2 nút ≥ 12px** — tránh trẻ click nhầm khi tay run.
+
+### Quy định cho Teacher/Admin (Information Density)
+
+- Cho phép `inset-card 16px` để hiển thị nhiều dữ liệu, **nhưng phải kèm tuỳ chọn Compact / Comfortable** trong Settings.
+- **Tabular spacing**: row height tối thiểu 40px để tránh mỏi mắt khi scan bảng dài.
+
+### Focus Indicator Spacing
+
+| Yêu cầu | WCAG | OVI |
+| --- | --- | --- |
+| Outline width | ≥ 2px | 2px (Teacher) · 3px (Kids/Teens) |
+| Outline offset | ≥ 2px | `outline-offset: 2px` |
+| Min contrast | 3:1 với background | ✅ |
+
+## Do's & Don'ts
+
+| ✅ Do | ❌ Don't |
+| --- | --- |
+| Mọi spacing là bội số của 4px | Dùng 5px, 7px, 13px tuỳ tiện |
+| Bind Auto Layout tới `sys.spacing.*` | Gõ số cứng vào padding/gap |
+| Touch target Kids ≥ 56×56dp | Reuse touch target Teacher cho Kids |
+| Khoảng cách giữa 2 button ≥ 8px (Kids: 12px) | Đặt 2 button sát nhau gây mis-tap |
+| Dùng `gap` thay `margin` trong flex/grid | Cộng `margin-bottom` thủ công lên từng item |
+| Cho phép option Compact/Comfortable cho Admin | Force 1 spacing duy nhất cho mọi giáo viên |
+| Test layout ở 320px width | Chỉ test ở desktop 1440px |
+
+<Tip>
+  **Checklist trước ship spacing**: (1) Bội số của 4px? (2) Token đúng 3 tầng? (3) Map 3 themes? (4) Touch target đủ size? (5) Test responsive 320px → 1440px? (6) Bind Auto Layout trong Figma? Đủ 6 ✅ — ship.
+</Tip>

@@ -4,4 +4,273 @@ description: "Web Scale vs App Scale"
 icon: "font"
 ---
 
-# Typography
+## Tổng quan
+
+Typography là yếu tố foundation quyết định **khả năng đọc** và **cảm xúc thương hiệu** của OVI. Trong sản phẩm giáo dục, một hệ chữ thiếu chuẩn có thể trực tiếp ảnh hưởng đến tốc độ học của trẻ và sự mệt mỏi của giáo viên khi làm việc dài giờ.
+
+OVI sử dụng mô hình **Multi-theme Typography 3 tầng** trên Figma Variables, đảm bảo:
+
+- **Kids**: font tròn trịa, kích thước lớn, line-height rộng — dễ đọc cho trẻ tập đọc.
+- **Teens**: font hiện đại, gọn gàng, đủ contrast với dark theme.
+- **Teacher/Admin**: font tinh giản, dày dữ liệu, tối ưu cho data-heavy UI.
+
+## 1. Naming Convention — Mô hình 3 tầng
+
+### Tầng 1 — Primitive (Reference)
+
+Giá trị thô của font-family, size, weight, line-height.
+
+```text
+ref.font.family.display
+ref.font.family.body
+ref.font.size.100   →  12px
+ref.font.size.200   →  14px
+ref.font.size.300   →  16px
+ref.font.weight.regular   →  400
+ref.font.weight.bold      →  700
+ref.line-height.tight     →  1.2
+ref.line-height.normal    →  1.5
+```
+
+### Tầng 2 — Semantic (System)
+
+Mang ý nghĩa hierarchy. Đặt theo `sys.typography.{role}.{property}`.
+
+```text
+sys.typography.heading-xl
+sys.typography.heading-lg
+sys.typography.heading-md
+sys.typography.body-lg
+sys.typography.body-md
+sys.typography.body-sm
+sys.typography.label
+sys.typography.caption
+sys.typography.code
+```
+
+Mỗi semantic token là một **composite** gồm: `font-family`, `font-size`, `font-weight`, `line-height`, `letter-spacing`.
+
+### Tầng 3 — Component
+
+```text
+cmp.button.label
+cmp.input.placeholder
+cmp.card.title
+cmp.toast.message
+cmp.data-table.cell
+```
+
+<Note>
+  Typography token là **composite** — gồm nhiều thuộc tính. Trong Figma Variables, dùng **Text Style** kết hợp Variable cho từng thuộc tính con.
+</Note>
+
+## 2. Mapping Table — Theme Switching
+
+### Font Family
+
+| Semantic Token | OVI Kids | OVI Teens | OVI Teacher/Admin |
+| --- | --- | --- | --- |
+| `sys.font.family.display` | `Baloo 2`_(tròn, vui)_ | `Inter Display` | `Inter Display` |
+| `sys.font.family.body` | `Nunito`_(thân thiện)_ | `Inter` | `Inter` |
+| `sys.font.family.code` | `JetBrains Mono` | `JetBrains Mono` | `JetBrains Mono` |
+
+### Heading Scale (Web)
+
+| Semantic Token | OVI Kids | OVI Teens | OVI Teacher/Admin |
+| --- | --- | --- | --- |
+| `sys.typography.heading-xl` | 40px / 1.3 / 700 | 36px / 1.2 / 700 | 32px / 1.2 / 600 |
+| `sys.typography.heading-lg` | 32px / 1.3 / 700 | 28px / 1.25 / 700 | 24px / 1.25 / 600 |
+| `sys.typography.heading-md` | 24px / 1.4 / 600 | 22px / 1.3 / 600 | 20px / 1.3 / 600 |
+| `sys.typography.heading-sm` | 20px / 1.4 / 600 | 18px / 1.3 / 600 | 16px / 1.3 / 600 |
+
+### Body Scale (App)
+
+| Semantic Token | OVI Kids | OVI Teens | OVI Teacher/Admin |
+| --- | --- | --- | --- |
+| `sys.typography.body-lg` | 18px / 1.6 / 400 | 16px / 1.5 / 400 | 16px / 1.5 / 400 |
+| `sys.typography.body-md` | 16px / 1.6 / 400 | 14px / 1.5 / 400 | 14px / 1.5 / 400 |
+| `sys.typography.body-sm` | 14px / 1.6 / 400 | 13px / 1.5 / 400 | 12px / 1.5 / 400 |
+| `sys.typography.label` | 14px / 1.4 / 600 | 13px / 1.3 / 600 | 12px / 1.3 / 600 |
+| `sys.typography.caption` | 12px / 1.4 / 400 | 11px / 1.3 / 400 | 11px / 1.3 / 400 |
+
+<Tip>
+  **Định dạng**: `font-size / line-height / font-weight`. Line-height của Kids luôn rộng hơn (1.6 vs 1.5) để dễ đọc cho trẻ.
+</Tip>
+
+### Web Scale vs App Scale
+
+| Platform | Min body size | Heading scale ratio | Container width |
+| --- | --- | --- | --- |
+| **Web Desktop** | 16px | 1.25 (Major Third) | 1200–1440px |
+| **Web Tablet** | 16px | 1.20 | 768–1024px |
+| **App Mobile** | 14px (Kids: 16px) | 1.18 | 320–480px |
+| **App Tablet** | 16px | 1.20 | 768–1024px |
+
+## 3. Cách sử dụng trong Code & Figma
+
+### Code — JSON Token & CSS
+
+<CodeGroup>
+
+```json tokens.typography.json
+{
+  "ref": {
+    "font": {
+      "family": {
+        "display": { "value": "Baloo 2, sans-serif", "type": "fontFamily" },
+        "body": { "value": "Nunito, sans-serif", "type": "fontFamily" }
+      },
+      "size": {
+        "300": { "value": "16px", "type": "fontSize" },
+        "400": { "value": "18px", "type": "fontSize" },
+        "500": { "value": "20px", "type": "fontSize" }
+      },
+      "weight": {
+        "regular": { "value": 400, "type": "fontWeight" },
+        "bold": { "value": 700, "type": "fontWeight" }
+      }
+    },
+    "lineHeight": {
+      "normal": { "value": 1.5, "type": "lineHeight" },
+      "loose": { "value": 1.6, "type": "lineHeight" }
+    }
+  },
+  "sys": {
+    "typography": {
+      "body-lg": {
+        "value": {
+          "fontFamily": "{ref.font.family.body}",
+          "fontSize": "{ref.font.size.400}",
+          "fontWeight": "{ref.font.weight.regular}",
+          "lineHeight": "{ref.lineHeight.loose}"
+        },
+        "type": "typography"
+      }
+    }
+  }
+}
+```
+
+```css typography.css
+:root {
+  --sys-font-family-body: 'Nunito', sans-serif;
+  --sys-font-family-display: 'Baloo 2', sans-serif;
+}
+
+[data-theme="teens"],
+[data-theme="teacher"] {
+  --sys-font-family-body: 'Inter', sans-serif;
+  --sys-font-family-display: 'Inter Display', sans-serif;
+}
+
+.sys-typography-body-lg {
+  font-family: var(--sys-font-family-body);
+  font-size: var(--sys-font-size-body-lg);
+  font-weight: 400;
+  line-height: var(--sys-line-height-body-lg);
+}
+
+[data-theme="kids"] {
+  --sys-font-size-body-lg: 18px;
+  --sys-line-height-body-lg: 1.6;
+}
+
+[data-theme="teens"],
+[data-theme="teacher"] {
+  --sys-font-size-body-lg: 16px;
+  --sys-line-height-body-lg: 1.5;
+}
+```
+
+```tsx Text.tsx
+import styled from '@emotion/styled';
+
+type Variant = 'heading-xl' | 'heading-lg' | 'body-lg' | 'body-md' | 'caption';
+
+export const Text = styled.p<{ variant: Variant }>`
+  font-family: var(--sys-font-family-body);
+  font-size: var(--sys-font-size-${(p) => p.variant});
+  line-height: var(--sys-line-height-${(p) => p.variant});
+  font-weight: var(--sys-font-weight-${(p) => p.variant});
+  margin: 0;
+`;
+
+// Sử dụng:
+<Text variant="heading-lg">Chào mừng đến với OVI</Text>
+```
+
+</CodeGroup>
+
+### Figma — Text Styles
+
+<Steps>
+  <Step title="Tạo Variable cho từng thuộc tính">
+    Trong collection `OVI/Typography`, tạo các variable `sys/font-size/body-lg`, `sys/line-height/body-lg`… với 3 modes Kids/Teens/Teacher.
+  </Step>
+  <Step title="Tạo Text Style">
+    Mở **Local Styles** → tạo `Body / Large` → bind từng thuộc tính (size, line-height, weight) tới variable tương ứng.
+  </Step>
+  <Step title="Áp dụng">
+    Select text → chọn Style `Body / Large`. Khi switch mode, text tự động cập nhật.
+  </Step>
+</Steps>
+
+## 4. Tiêu chuẩn Accessibility (WCAG)
+
+### Yêu cầu cốt lõi
+
+| Tiêu chí | Yêu cầu | Áp dụng OVI |
+| --- | --- | --- |
+| **Min font-size body** | 16px (WCAG khuyến nghị) | Kids: 16px · Teens/Teacher: 14px ⚠️ chỉ cho metadata |
+| **Line-height** | ≥ 1.5 cho body | Kids: 1.6 · Teens/Teacher: 1.5 ✅ |
+| **Letter spacing** | ≥ 0.12× font-size | Áp dụng cho body, không áp dụng heading |
+| **Word spacing** | ≥ 0.16× font-size | Mặc định Browser |
+| **Paragraph spacing** | ≥ 2× font-size | `margin-bottom: 1em` mặc định |
+| **Max line length** | 80 ký tự (~75ch) | `max-width: 75ch` cho block văn bản dài |
+| **User zoom** | Hỗ trợ zoom đến 200% không vỡ layout | Test bắt buộc trước ship |
+
+### Quy định riêng cho OVI Kids
+
+- **Min body 16px**, heading `≥ 20px`. Không có exception.
+- **Line-height 1.6** cho body — trẻ đọc chậm cần khoảng cách dòng rộng hơn.
+- **Tránh font Italic** cho body — gây khó đọc cho trẻ chưa thành thạo đọc.
+- **Tránh ALL CAPS** cho text \> 3 từ — phá nhịp đọc tự nhiên.
+
+### Quy định cho Teens (Dark theme)
+
+- **Font-weight tối thiểu 400** trên dark background — tránh `font-weight: 300` gây khó đọc do quang sai.
+- **Tránh pure white text** trên pure black — dùng `#F1F5F9` trên `#0F172A`.
+
+### Quy định cho Teacher/Admin
+
+- **Body 14px chấp nhận được** trong Data Table dày dữ liệu, nhưng phải có **option zoom** để giáo viên tăng size khi cần.
+- **Tabular numerals** (`font-variant-numeric: tabular-nums`) cho mọi số liệu trong bảng — giúp scan cột số nhanh hơn.
+
+### Dynamic Type Support (Mobile)
+
+| Platform | API | Hỗ trợ |
+| --- | --- | --- |
+| iOS | `UIFontMetrics` | ✅ Tự động scale theo cài đặt người dùng |
+| Android | `sp` unit \+ `fontScale` | ✅ Tự động scale |
+| Web | `rem` unit | ✅ Scale theo browser zoom |
+
+<Warning>
+  **Không dùng `px` trong CSS cho font-size** — luôn dùng `rem` để hỗ trợ user zoom. Một số người cần zoom 200% mới đọc được.
+</Warning>
+
+## Do's & Don'ts
+
+| ✅ Do | ❌ Don't |
+| --- | --- |
+| Dùng `sys.typography.*` token | Set `font-size: 14px` cứng |
+| Dùng `rem` thay vì `px` cho font-size | Hard-code `px` phá user zoom |
+| Line-height ≥ 1.5 cho body | Line-height 1.0 cho body văn bản dài |
+| Max-width 75ch cho paragraph | Để text trải rộng full màn hình desktop |
+| Dùng `tabular-nums` cho số trong bảng | Dùng proportional số → cột lệch |
+| Test với 200% zoom trước ship | Giả định mọi người dùng zoom 100% |
+| Loại Italic và ALL CAPS cho Kids body | Italic block dài cho trẻ tập đọc |
+| Min 16px body cho Kids | Dùng 12px body cho Kids "cho gọn" |
+
+<Tip>
+  **Checklist trước ship typography**: (1) Token đúng 3 tầng? (2) Map 3 themes? (3) Min size phù hợp đối tượng? (4) Line-height ≥ 1.5? (5) Test zoom 200%? (6) Tabular-nums cho data? Đủ 6 ✅ — sẵn sàng.
+</Tip>

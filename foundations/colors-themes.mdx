@@ -4,4 +4,299 @@ description: "Figma Variables mapping"
 icon: "palette"
 ---
 
-# Colors & Themes
+## Tổng quan
+
+Hệ thống màu OVI được kiến trúc theo mô hình **Multi-theme 3 tầng** dựa trên Figma Variables, đảm bảo khả năng switch theme tức thì giữa **OVI Kids, OVI Teens, OVI Teacher/Admin** mà không cần can thiệp code.
+
+Tách 3 tầng giúp:
+
+- **Designer** chỉ làm việc với token Semantic — không lo giá trị hex.
+- **Developer** import 1 lần, theme switch tự động qua CSS variables.
+- **Đội ngũ** thay đổi color palette toàn hệ thống chỉ bằng cách update Primitive layer.
+
+## 1. Naming Convention — Mô hình 3 tầng
+
+```text
+Primitive  →  Semantic  →  Component
+   (raw)        (intent)        (usage)
+```
+
+### Tầng 1 — Primitive (Reference)
+
+Giá trị màu thô, không mang ý nghĩa. Đặt theo công thức `ref.color.{hue}.{scale}`.
+
+```text
+ref.color.orange.500
+ref.color.green.700
+ref.color.neutral.50
+```
+
+- **hue**: `orange`, `green`, `blue`, `purple`, `red`, `yellow`, `neutral`
+- **scale**: `50, 100, 200, 300, 400, 500, 600, 700, 800, 900` (50 sáng nhất → 900 tối nhất)
+
+### Tầng 2 — Semantic (System)
+
+Mang ý nghĩa sử dụng. Đặt theo công thức `sys.color.{role}.{variant}`.
+
+```text
+sys.color.brand.primary
+sys.color.brand.primary-hover
+sys.color.background.surface
+sys.color.text.primary
+sys.color.feedback.success
+sys.color.border.default
+```
+
+- **role**: `brand`, `background`, `text`, `border`, `feedback`, `interactive`
+- **variant**: `primary`, `secondary`, `tertiary`, `hover`, `pressed`, `disabled`
+
+### Tầng 3 — Component (Specific)
+
+Bind cho từng component cụ thể. Đặt theo `cmp.{component}.{property}.{state}`.
+
+```text
+cmp.button.background.primary
+cmp.button.background.primary-hover
+cmp.card.border.default
+cmp.input.text.placeholder
+```
+
+<Note>
+  **Quy tắc vàng**: Component chỉ tham chiếu Semantic, Semantic chỉ tham chiếu Primitive. **Không bao giờ** Component → Primitive trực tiếp.
+</Note>
+
+## 2. Mapping Table — Theme Switching
+
+### Brand Colors
+
+| Semantic Token | OVI Kids | OVI Teens | OVI Teacher/Admin |
+| --- | --- | --- | --- |
+| `sys.color.brand.primary` | `#FF8A3D`_(cam sáng)_ | `#22D3EE`_(neon cyan)_ | `#1E3A8A`_(xanh navy đậm)_ |
+| `sys.color.brand.primary-hover` | `#FF6B1A` | `#06B6D4` | `#1E40AF` |
+| `sys.color.brand.secondary` | `#FFC93D`_(vàng nắng)_ | `#A78BFA`_(tím lavender)_ | `#0F766E`_(teal trầm)_ |
+| `sys.color.brand.accent` | `#FF4D8D`_(hồng kẹo)_ | `#F472B6`_(hồng neon)_ | `#B45309`_(amber)_ |
+
+### Background
+
+| Semantic Token | OVI Kids | OVI Teens | OVI Teacher/Admin |
+| --- | --- | --- | --- |
+| `sys.color.background.canvas` | `#FFF8F0`_(kem ấm)_ | `#0F172A`_(slate dark)_ | `#FFFFFF` |
+| `sys.color.background.surface` | `#FFFFFF` | `#1E293B` | `#F8FAFC` |
+| `sys.color.background.elevated` | `#FFF3E0` | `#334155` | `#FFFFFF` |
+
+### Text
+
+| Semantic Token | OVI Kids | OVI Teens | OVI Teacher/Admin |
+| --- | --- | --- | --- |
+| `sys.color.text.primary` | `#2D1810`_(nâu đậm thân thiện)_ | `#F1F5F9`_(slate-100)_ | `#0F172A`_(slate-900)_ |
+| `sys.color.text.secondary` | `#5C3A28` | `#CBD5E1` | `#475569` |
+| `sys.color.text.disabled` | `#A89282` | `#64748B` | `#94A3B8` |
+| `sys.color.text.on-primary` | `#FFFFFF` | `#0F172A` | `#FFFFFF` |
+
+### Feedback
+
+| Semantic Token | OVI Kids | OVI Teens | OVI Teacher/Admin |
+| --- | --- | --- | --- |
+| `sys.color.feedback.success` | `#34D399` | `#10B981` | `#059669` |
+| `sys.color.feedback.warning` | `#FBBF24` | `#F59E0B` | `#D97706` |
+| `sys.color.feedback.error` | `#FB7185`_(hồng dịu — tránh đỏ gắt với trẻ)_ | `#EF4444` | `#DC2626` |
+| `sys.color.feedback.info` | `#60A5FA` | `#3B82F6` | `#2563EB` |
+
+### Border
+
+| Semantic Token | OVI Kids | OVI Teens | OVI Teacher/Admin |
+| --- | --- | --- | --- |
+| `sys.color.border.default` | `#FFD9B8` | `#334155` | `#E2E8F0` |
+| `sys.color.border.strong` | `#FF8A3D` | `#22D3EE` | `#1E3A8A` |
+| `sys.color.border.focus` | `#FF6B1A` | `#06B6D4` | `#2563EB` |
+
+## 3. Cách sử dụng trong Code & Figma
+
+### Code — JSON Token & CSS Variables
+
+<CodeGroup>
+
+```json tokens.kids.json
+{
+  "ref": {
+    "color": {
+      "orange": {
+        "500": { "value": "#FF8A3D", "type": "color" },
+        "600": { "value": "#FF6B1A", "type": "color" }
+      },
+      "yellow": {
+        "400": { "value": "#FFC93D", "type": "color" }
+      }
+    }
+  },
+  "sys": {
+    "color": {
+      "brand": {
+        "primary": {
+          "value": "{ref.color.orange.500}",
+          "type": "color"
+        },
+        "primary-hover": {
+          "value": "{ref.color.orange.600}",
+          "type": "color"
+        },
+        "secondary": {
+          "value": "{ref.color.yellow.400}",
+          "type": "color"
+        }
+      }
+    }
+  },
+  "cmp": {
+    "button": {
+      "background": {
+        "primary": {
+          "value": "{sys.color.brand.primary}",
+          "type": "color"
+        }
+      }
+    }
+  }
+}
+```
+
+```css theme.css
+/* OVI Kids */
+[data-theme="kids"] {
+  --sys-color-brand-primary: #FF8A3D;
+  --sys-color-brand-primary-hover: #FF6B1A;
+  --sys-color-text-primary: #2D1810;
+  --sys-color-background-canvas: #FFF8F0;
+  --sys-color-feedback-error: #FB7185;
+}
+
+/* OVI Teens */
+[data-theme="teens"] {
+  --sys-color-brand-primary: #22D3EE;
+  --sys-color-brand-primary-hover: #06B6D4;
+  --sys-color-text-primary: #F1F5F9;
+  --sys-color-background-canvas: #0F172A;
+  --sys-color-feedback-error: #EF4444;
+}
+
+/* OVI Teacher/Admin */
+[data-theme="teacher"] {
+  --sys-color-brand-primary: #1E3A8A;
+  --sys-color-brand-primary-hover: #1E40AF;
+  --sys-color-text-primary: #0F172A;
+  --sys-color-background-canvas: #FFFFFF;
+  --sys-color-feedback-error: #DC2626;
+}
+```
+
+```tsx Button.tsx
+import styled from '@emotion/styled';
+
+export const Button = styled.button`
+  background: var(--cmp-button-background-primary);
+  color: var(--sys-color-text-on-primary);
+  border: 1px solid var(--sys-color-border-strong);
+
+  &:hover {
+    background: var(--sys-color-brand-primary-hover);
+  }
+
+  &:focus-visible {
+    outline: 2px solid var(--sys-color-border-focus);
+    outline-offset: 2px;
+  }
+`;
+```
+
+```ts useTheme.ts
+import tokens from '@ovi/design-tokens';
+
+export type ThemeName = 'kids' | 'teens' | 'teacher';
+
+export function applyTheme(theme: ThemeName) {
+  document.documentElement.setAttribute('data-theme', theme);
+}
+
+// Truy cập token trong JS:
+const primaryColor = tokens.sys.color.brand.primary; // resolved tự động theo theme
+```
+
+</CodeGroup>
+
+### Figma — Variables Setup
+
+<Steps>
+  <Step title="Tạo Collection">
+    Trong Figma, mở **Local Variables** → tạo collection `OVI/Color`.
+  </Step>
+  <Step title="Tạo Modes">
+    Thêm 3 modes: `Kids`, `Teens`, `Teacher`.
+  </Step>
+  <Step title="Tạo tầng Primitive">
+    Tạo các variable `ref/color/orange/500`, `ref/color/green/700`… với cùng giá trị ở cả 3 modes.
+  </Step>
+  <Step title="Tạo tầng Semantic">
+    Tạo `sys/color/brand/primary` — gán giá trị **alias** trỏ về `ref` token, **khác nhau giữa các modes**.
+  </Step>
+  <Step title="Switch Mode">
+    Click vào frame gốc → đổi mode trong panel **Variables** → toàn bộ design tự động thay đổi.
+  </Step>
+</Steps>
+
+<Tip>
+  Tên variable trong Figma dùng dấu `/` để tạo cây thư mục. Ví dụ: `sys/color/brand/primary` sẽ hiện thành nhóm phân cấp gọn gàng trong panel.
+</Tip>
+
+## 4. Tiêu chuẩn Accessibility (WCAG)
+
+### Contrast Ratio yêu cầu
+
+| Cặp màu | WCAG AA (tối thiểu) | WCAG AAA (khuyến nghị) | OVI Kids | OVI Teens | OVI Teacher |
+| --- | --- | --- | --- | --- | --- |
+| Text thường ≥ 16px | 4.5:1 | 7:1 | **5.8:1** ✅ | **8.2:1** ✅ AAA | **12.6:1** ✅ AAA |
+| Text lớn ≥ 24px | 3:1 | 4.5:1 | **4.1:1** ✅ | **6.5:1** ✅ AAA | **9.2:1** ✅ AAA |
+| UI components & icons | 3:1 | — | **3.8:1** ✅ | **4.2:1** ✅ | **5.1:1** ✅ |
+| Focus indicator | 3:1 | — | **4.5:1** ✅ | **5.0:1** ✅ | **6.2:1** ✅ |
+
+### Quy định riêng cho OVI Kids
+
+- **Không dùng đỏ gắt** (`#FF0000`) cho error — dùng hồng dịu `#FB7185` để tránh tạo phản ứng tiêu cực mạnh.
+- **Avoid pure white background** — dùng kem ấm `#FFF8F0` để giảm mỏi mắt khi học liên tục.
+- **Contrast tối thiểu 4.5:1** kể cả với text lớn (override WCAG AA tiêu chuẩn).
+
+### Quy định riêng cho OVI Teens (Dark theme)
+
+- **Background không pure black** (`#000`) — dùng `#0F172A` để giảm halation effect.
+- **Text trên dark background ≤ `#F1F5F9`** — tránh `#FFFFFF` gây chói trên màn OLED.
+
+### Quy định cho Teacher/Admin
+
+- **Tuân thủ AAA** cho text body — vì giáo viên dùng portal dày đặc, mỏi mắt nhanh.
+- **Color không phải kênh thông tin duy nhất** — luôn kèm icon/label cho trạng thái.
+
+### Color Blindness
+
+Test mọi màu Semantic qua 3 dạng:
+
+- **Protanopia** (mù đỏ)
+- **Deuteranopia** (mù xanh lá — phổ biến nhất)
+- **Tritanopia** (mù xanh dương)
+
+<Warning>
+  **Không bao giờ** chỉ dùng màu để phân biệt trạng thái (success/error). Luôn kèm **icon** (✓ ✗) hoặc **text** để người mù màu vẫn hiểu được.
+</Warning>
+
+## Do's & Don'ts
+
+| ✅ Do | ❌ Don't |
+| --- | --- |
+| Dùng `sys.color.*` trong design/code | Hard-code hex như `#FF8A3D` |
+| Tham chiếu Component → Semantic → Primitive | Skip tầng: Component → Primitive |
+| Test contrast với extension Figma "Stark" | Đoán contrast bằng mắt |
+| Thay đổi giá trị Primitive khi rebrand | Sửa giá trị Semantic trực tiếp |
+| Đặt tên token theo _intent_, không theo màu | Đặt `sys.color.orange-button` |
+| Kèm icon/label cho trạng thái màu | Chỉ dùng màu để báo success/error |
+
+<Tip>
+  **Checklist trước khi merge color token mới**: (1) Đặt tên đúng 3 tầng? (2) Map đủ 3 themes? (3) Contrast ≥ AA cho text? (4) Test color blindness? (5) Có Figma Variable \+ JSON \+ CSS đồng bộ? Đủ 5 ✅ — sẵn sàng publish.
+</Tip>

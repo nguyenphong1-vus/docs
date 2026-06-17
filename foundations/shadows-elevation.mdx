@@ -4,4 +4,312 @@ description: "Hệ thống shadow và elevation"
 icon: "layer-group"
 ---
 
-# Shadows & Elevation
+## Tổng quan
+
+Shadow và Elevation tạo ra **chiều sâu thị giác** — báo hiệu cấp độ ưu tiên của các phần tử trên màn hình. Trong sản phẩm OVI:
+
+- **Kids**: shadow ấm áp, mềm mại, cảm giác "stickers" trên giấy.
+- **Teens**: shadow neon glow trên dark theme, cảm giác hiện đại.
+- **Teacher/Admin**: shadow tinh tế, gần như phẳng — tránh phân tâm khi làm việc dày dữ liệu.
+
+OVI quản lý elevation theo mô hình **Multi-theme 3 tầng** với hệ 6 cấp độ z-axis (`elevation 0–5`).
+
+## 1. Naming Convention — Mô hình 3 tầng
+
+### Tầng 1 — Primitive (Reference)
+
+```text
+ref.shadow.0   →  none
+ref.shadow.1   →  0 1px 2px rgba(0,0,0,0.05)
+ref.shadow.2   →  0 2px 4px rgba(0,0,0,0.08)
+ref.shadow.3   →  0 4px 8px rgba(0,0,0,0.10)
+ref.shadow.4   →  0 8px 16px rgba(0,0,0,0.12)
+ref.shadow.5   →  0 16px 32px rgba(0,0,0,0.16)
+```
+
+Mỗi shadow là composite: `offset-x | offset-y | blur | spread | color`.
+
+### Tầng 2 — Semantic (System)
+
+Đặt theo `sys.elevation.{level}` hoặc `sys.shadow.{role}`.
+
+```text
+sys.elevation.0    →  flat (no shadow)
+sys.elevation.1    →  raised (card, chip)
+sys.elevation.2    →  hover (card hover)
+sys.elevation.3    →  overlay (dropdown, tooltip)
+sys.elevation.4    →  modal
+sys.elevation.5    →  toast, top-most
+```
+
+```text
+sys.shadow.focus       →  glow quanh focus indicator
+sys.shadow.button-pressed   →  inset shadow khi nhấn
+```
+
+### Tầng 3 — Component
+
+```text
+cmp.card.shadow
+cmp.card.shadow-hover
+cmp.modal.shadow
+cmp.dropdown.shadow
+cmp.bottom-sheet.shadow
+```
+
+<Note>
+  **Z-index pairing**: Mỗi `sys.elevation.{n}` đi kèm một `z-index` cố định. Không tự ý tăng z-index thoát khỏi hệ thống — sẽ phá thứ bậc layer.
+</Note>
+
+## 2. Mapping Table — Theme Switching
+
+### Elevation Levels
+
+| Semantic Token | OVI Kids | OVI Teens _(dark)_ | OVI Teacher/Admin |
+| --- | --- | --- | --- |
+| `sys.elevation.0`_(flat)_ | `none` | `none` | `none` |
+| `sys.elevation.1`_(raised)_ | `0 2px 4px rgba(255,138,61,0.12)`_(ấm cam)_ | `0 2px 8px rgba(34,211,238,0.20)`_(neon glow)_ | `0 1px 2px rgba(15,23,42,0.06)`_(tinh tế)_ |
+| `sys.elevation.2`_(hover)_ | `0 4px 12px rgba(255,138,61,0.18)` | `0 4px 16px rgba(34,211,238,0.30)` | `0 2px 4px rgba(15,23,42,0.08)` |
+| `sys.elevation.3`_(overlay)_ | `0 8px 16px rgba(45,24,16,0.10)` | `0 8px 24px rgba(0,0,0,0.40)` | `0 4px 8px rgba(15,23,42,0.10)` |
+| `sys.elevation.4`_(modal)_ | `0 12px 32px rgba(45,24,16,0.16)` | `0 16px 40px rgba(0,0,0,0.50)` | `0 8px 16px rgba(15,23,42,0.12)` |
+| `sys.elevation.5`_(toast)_ | `0 16px 40px rgba(45,24,16,0.20)` | `0 24px 48px rgba(0,0,0,0.60)` | `0 12px 24px rgba(15,23,42,0.16)` |
+
+### Z-Index Mapping
+
+| Elevation | Z-index | Use case |
+| --- | --- | --- |
+| 0 | 0 | Background, flat content |
+| 1 | 10 | Card, chip, sticky header |
+| 2 | 20 | Card hover, FAB |
+| 3 | 1000 | Dropdown, popover, tooltip |
+| 4 | 1100 | Modal, dialog |
+| 5 | 1200 | Toast, snackbar (top-most) |
+
+### Special Shadows
+
+| Semantic Token | OVI Kids | OVI Teens | OVI Teacher/Admin |
+| --- | --- | --- | --- |
+| `sys.shadow.focus` | `0 0 0 3px rgba(255,107,26,0.4)` | `0 0 0 2px rgba(34,211,238,0.5)` | `0 0 0 2px rgba(37,99,235,0.4)` |
+| `sys.shadow.button-pressed` | `inset 0 2px 4px rgba(0,0,0,0.10)` | `inset 0 1px 2px rgba(0,0,0,0.20)` | `inset 0 1px 2px rgba(15,23,42,0.08)` |
+
+<Tip>
+  **Quan sát**: Kids dùng shadow màu cam ấm tạo cảm giác "in trên giấy". Teens dùng shadow neon trên dark tạo "glow sci-fi". Teacher dùng shadow xám neutral tinh tế — gần phẳng.
+</Tip>
+
+## 3. Cách sử dụng trong Code & Figma
+
+### Code — JSON Token & CSS
+
+<CodeGroup>
+
+```json tokens.elevation.json
+{
+  "ref": {
+    "shadow": {
+      "0": { "value": "none", "type": "boxShadow" },
+      "1": {
+        "value": {
+          "x": "0",
+          "y": "1px",
+          "blur": "2px",
+          "spread": "0",
+          "color": "rgba(0,0,0,0.05)"
+        },
+        "type": "boxShadow"
+      },
+      "3": {
+        "value": {
+          "x": "0",
+          "y": "4px",
+          "blur": "8px",
+          "spread": "0",
+          "color": "rgba(0,0,0,0.10)"
+        },
+        "type": "boxShadow"
+      }
+    }
+  },
+  "sys": {
+    "elevation": {
+      "1": { "value": "{ref.shadow.1}", "type": "boxShadow" },
+      "3": { "value": "{ref.shadow.3}", "type": "boxShadow" }
+    }
+  },
+  "cmp": {
+    "card": {
+      "shadow": { "value": "{sys.elevation.1}", "type": "boxShadow" },
+      "shadow-hover": { "value": "{sys.elevation.2}", "type": "boxShadow" }
+    }
+  }
+}
+```
+
+```css elevation.css
+/* OVI Kids */
+[data-theme="kids"] {
+  --sys-elevation-1: 0 2px 4px rgba(255, 138, 61, 0.12);
+  --sys-elevation-2: 0 4px 12px rgba(255, 138, 61, 0.18);
+  --sys-elevation-3: 0 8px 16px rgba(45, 24, 16, 0.10);
+  --sys-elevation-4: 0 12px 32px rgba(45, 24, 16, 0.16);
+  --sys-elevation-5: 0 16px 40px rgba(45, 24, 16, 0.20);
+
+  --sys-shadow-focus: 0 0 0 3px rgba(255, 107, 26, 0.4);
+}
+
+/* OVI Teens (dark theme) */
+[data-theme="teens"] {
+  --sys-elevation-1: 0 2px 8px rgba(34, 211, 238, 0.20);
+  --sys-elevation-2: 0 4px 16px rgba(34, 211, 238, 0.30);
+  --sys-elevation-3: 0 8px 24px rgba(0, 0, 0, 0.40);
+  --sys-elevation-4: 0 16px 40px rgba(0, 0, 0, 0.50);
+  --sys-elevation-5: 0 24px 48px rgba(0, 0, 0, 0.60);
+
+  --sys-shadow-focus: 0 0 0 2px rgba(34, 211, 238, 0.5);
+}
+
+/* OVI Teacher/Admin */
+[data-theme="teacher"] {
+  --sys-elevation-1: 0 1px 2px rgba(15, 23, 42, 0.06);
+  --sys-elevation-2: 0 2px 4px rgba(15, 23, 42, 0.08);
+  --sys-elevation-3: 0 4px 8px rgba(15, 23, 42, 0.10);
+  --sys-elevation-4: 0 8px 16px rgba(15, 23, 42, 0.12);
+  --sys-elevation-5: 0 12px 24px rgba(15, 23, 42, 0.16);
+
+  --sys-shadow-focus: 0 0 0 2px rgba(37, 99, 235, 0.4);
+}
+```
+
+```tsx Card.tsx
+import styled from '@emotion/styled';
+
+export const Card = styled.div`
+  box-shadow: var(--sys-elevation-1);
+  border-radius: var(--sys-radius-card);
+  background: var(--sys-color-background-surface);
+  transition: box-shadow 200ms ease;
+
+  &:hover {
+    box-shadow: var(--sys-elevation-2);
+  }
+`;
+
+export const Modal = styled.div`
+  box-shadow: var(--sys-elevation-4);
+  z-index: 1100;
+`;
+
+export const Toast = styled.div`
+  box-shadow: var(--sys-elevation-5);
+  z-index: 1200;
+`;
+```
+
+</CodeGroup>
+
+### Figma — Effect Styles
+
+<Steps>
+  <Step title="Tạo Variable Collection">
+    Trong Figma, tạo collection `OVI/Effects` với 3 modes Kids / Teens / Teacher. Lưu ý: shadow là **composite**, dùng Effect Style.
+  </Step>
+  <Step title="Tạo Effect Style">
+    Vào **Local Styles** → Effects → tạo `Elevation / 1`, `Elevation / 2`… với Drop Shadow tương ứng.
+  </Step>
+  <Step title="Bind màu shadow tới Variable">
+    Trong panel Effect, click ô màu shadow → bind tới `sys/color/shadow/elevation-1` để theme switch hoạt động cho cả màu shadow.
+  </Step>
+  <Step title="Áp dụng">
+    Select frame → Effects panel → chọn `Elevation / 1`.
+  </Step>
+</Steps>
+
+<Warning>
+  Figma chưa hỗ trợ bind toàn bộ shadow object (offset/blur/spread/color) tới 1 variable duy nhất. Workaround: tạo Effect Style cho mỗi mode, đổi tên theo prefix `Kids/Elevation 1`, `Teens/Elevation 1` và switch thủ công khi cần preview cross-theme.
+</Warning>
+
+## 4. Tiêu chuẩn Accessibility (WCAG)
+
+### Yêu cầu cốt lõi
+
+| Tiêu chí | WCAG | OVI áp dụng |
+| --- | --- | --- |
+| **Non-text contrast** 1.4.11 | UI border/shadow boundary ≥ 3:1 | ✅ Có border làm fallback |
+| **Focus visible** 2.4.7 | Focus indicator phải có | ✅ `sys.shadow.focus` |
+| **Reduced motion** | Tôn trọng `prefers-reduced-motion` | ✅ Tắt transition shadow |
+| **Forced Colors Mode** | Layer phân tách không phụ thuộc shadow | ✅ Border fallback |
+
+### Nguyên tắc bắt buộc
+
+<ResponseField name="Shadow KHÔNG phải kênh phân tách duy nhất" type="Rule #1">
+  Mọi container có shadow phải có thêm **border** hoặc **background-color khác biệt** để fallback cho người dùng High Contrast Mode hoặc thị lực kém.
+</ResponseField>
+
+<ResponseField name="Focus shadow phải đạt 3:1 với background" type="Rule #2">
+  Focus glow `sys.shadow.focus` luôn dùng màu primary của theme với opacity ≥ 40% để đạt contrast cần thiết.
+</ResponseField>
+
+<ResponseField name="Reduced Motion — tắt transition shadow" type="Rule #3">
+  Khi user bật `prefers-reduced-motion: reduce`, shadow chuyển trạng thái không animate.
+</ResponseField>
+
+```css
+/* Reduced Motion */
+@media (prefers-reduced-motion: reduce) {
+  .card {
+    transition: none;
+  }
+}
+
+/* Forced Colors Mode */
+@media (forced-colors: active) {
+  .card, .modal {
+    box-shadow: none;
+    border: 1px solid CanvasText;
+  }
+}
+```
+
+### Quy định riêng cho OVI Kids
+
+- **Shadow màu ấm** (rgba có hue cam) — tránh shadow đen pure tạo cảm giác "đe doạ" trên app trẻ em.
+- **Focus shadow 3px** thay vì 2px (như Teens/Teacher) — trẻ thị lực chưa hoàn thiện cần focus rõ hơn.
+
+### Quy định cho Teens (Dark theme)
+
+- **Shadow neon glow** thay shadow đen — vì shadow đen trên dark background gần như không nhìn thấy.
+- **Opacity shadow ≥ 0.20** trên dark theme để có depth perception.
+
+### Quy định cho Teacher/Admin
+
+- **Shadow gần phẳng** (max 16px blur) — tránh phân tán sự chú ý khi giáo viên scan dữ liệu.
+- **Không dùng shadow cho row trong Data Table** — dùng border-bottom thay thế để tiết kiệm vertical space.
+
+## Bảng Component Reference
+
+| Component | Elevation | Hover | Note |
+| --- | --- | --- | --- |
+| `<Card>` | 1 | 2 | Hover tăng 1 cấp |
+| `<Button primary>` | 1 | 2 | Pressed: inset shadow |
+| `<FAB>` | 2 | 3 | Floating Action Button |
+| `<Dropdown>` | 3 | — | Z 1000 |
+| `<Tooltip>` | 3 | — | Z 1000 |
+| `<Modal>` | 4 | — | Z 1100 \+ backdrop |
+| `<BottomSheet>` | 4 | — | Shadow chỉ ở mép trên |
+| `<Toast>` | 5 | — | Z 1200, top-most |
+| `<DataTable row>` | 0 | 0 | Dùng border thay shadow |
+
+## Do's & Don'ts
+
+| ✅ Do | ❌ Don't |
+| --- | --- |
+| Dùng `sys.elevation.{n}` cho mọi shadow | `box-shadow: 0 4px 8px black` cứng |
+| Có border fallback khi shadow off | Chỉ shadow để phân tách card |
+| Test High Contrast Mode trên Windows | Bỏ qua forced-colors mode |
+| Tôn trọng `prefers-reduced-motion` | Animate shadow bất chấp setting |
+| Z-index theo bảng quy ước | `z-index: 9999` để "fix" overlap |
+| Shadow màu ấm cho Kids, neon cho Teens dark | Shadow đen pure cho mọi theme |
+| Hover tăng đúng 1 cấp elevation | Nhảy từ 1 lên 4 khi hover |
+
+<Tip>
+  **Quy tắc 1-cấp**: Khi component chuyển trạng thái (hover, active), elevation chỉ tăng/giảm **1 cấp** so với idle. Nhảy nhiều cấp gây cảm giác "lệch tầng" và phá thứ bậc thị giác.
+</Tip>
